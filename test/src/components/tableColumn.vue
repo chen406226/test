@@ -15,23 +15,34 @@ export default {
     }
     this.label = this.$props&&this.$props.label || this.$attrs.label
     let self = this
+    if (this.$attrs.prop=='name') {
+      console.log(this,this.$attrs.prop)
+    }
+    if (this.$props.prop=='name') {
+      console.log(this,'fsdddddddddddddddd')
+    }
     if (children) {
       // console.log(this.$slots,this.$scopedSlots,'scopeslots')
       let list = children.map((item)=>{
-        return(<el-table-column scopedSlots={this.$scopedSlots} {...{props: {...item},attrs:{...item}}}>
-        </el-table-column> )
+        // return(<el-table-column scopedSlots={this.$scopedSlots} {...{props: {...item},attrs:{...item}}}>
+        // </el-table-column> )
+        // 第三种 递归
+        return(<tableColumn scopedSlots={this.$scopedSlots} {...{props: {...item},attrs:{...item}}}>
+        </tableColumn> )
+
+        // 第二种方法 重写， 把prop带进去， 因为那边的item外层没有prop属性， 所以用scope.prop替换item.prop  ckey
         // return(<el-table-column scopedSlots={{...this.$scopedSlots,default:function(props){
         //   return self.$scopedSlots.default({...props,prop:item.prop})
-        // 第二种方法 重写， 把prop带进去， 因为那边的item外层没有prop属性， 所以用scope.prop替换item.prop  ckey
         // }}} {...{props: {...item},attrs:{...item}}}>
         // </el-table-column> )
       })
-      return (<el-table-column  {...{props: {...this.$attrs,}}}  label={this.label}>
+      return (<el-table-column  {...{props: {...this.$attrs,...this.$props}}}  label={this.label}>
         {list}
       </el-table-column>)
     }else{
+      console.log('dsfffff')
       // console.log(this.$slots,this.$scopedSlots,'ccccccccc')
-      return (<el-table-column cell-click={()=>{console.log('click')}} scopedSlots={this.$scopedSlots} {...{props: {...this.$attrs,...this.$props}}} label={this.label}>
+      return (<el-table-column cellClick={()=>{console.log('click')}} scopedSlots={this.$scopedSlots} {...{props: {...this.$attrs,...this.$props}}} label={this.label}>
       </el-table-column>)
     }
   }

@@ -71,14 +71,27 @@ export default {
   },
   data() {
     return {
-      tablehead1:[{
+      tablehead1:[
+        {
+        label:'时间df',
+        prop:'city',
+        align:'center',
+      },
+        {
         label:'时间',
         align:'center',
         children:[
-          {label:"日期", prop:'date',align:'center',width:100},
-          {label:"姓名",prop:'name',align:'center',}
+          // {label:"日期", prop:'date',align:'center',width:100},
+          {label:"姓名",
+            prop:'name',
+            children:[
+              {label:"不实的",prop:'name',align:'center',}
+            ],
+            align:'center',
+          }
         ]
-      },{
+      },
+      {
         label:'地区',
         align:'center',
         children:[
@@ -92,7 +105,8 @@ export default {
         children:[
           {label:"邮编",prop:'zip',align:'center',}
         ]
-      }],
+      }
+      ],
       tablehead2:[
           {label:"日期", prop:'date',align:'center',width:100},
           {label:"姓名",prop:'name',align:'center',},
