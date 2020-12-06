@@ -122,7 +122,7 @@ export default {
           {label:"省份",prop:'province',align:'center',},
           {label:"市区",prop:'city',align:'center',},
           {label:"地址",prop:'address',width:300,align:'center',},
-          {label:"邮编",prop:'zip',align:'center',}
+          {label:"邮编",fixed:'right',prop:'zip',align:'center',}
       ],
       tableData: [{
           date: '2016-05-03',

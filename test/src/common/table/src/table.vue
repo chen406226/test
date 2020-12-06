@@ -29,24 +29,12 @@
         }">
       </table-header>
     </div>
+    <!-- <span>{{layout.headerHeight}}</span> -->
     <div
       class="el-table__body-wrapper ctable-bodyWrapper"
       ref="bodyWrapper"
       :class="[layout.scrollX ? `is-scrolling-${scrollPosition}` : 'is-scrolling-none']"
       :style="[bodyHeight]">
-      <div class="ctable-bodyWrapper-cover">
-        <table-body
-          :context="context"
-          :store="store"
-          :stripe="stripe"
-          :row-class-name="rowClassName"
-          :row-style="rowStyle"
-          :highlight="highlightCurrentRow"
-          :style="{
-            width: bodyWidth
-          }">
-        </table-body>
-      </div>
       <table-body
         :context="context"
         :store="store"
@@ -58,6 +46,19 @@
            width: bodyWidth
         }">
       </table-body>
+      <div class="ctable-bodyWrapper-cover" :style="{top: cTop + 'px'}">
+        <table-body
+          :store="store"
+          rowFixed
+          :stripe="stripe"
+          :row-class-name="rowClassName"
+          :row-style="rowStyle"
+          :highlight="highlightCurrentRow"
+          :style="{
+            width: bodyWidth
+          }">
+        </table-body>
+      </div>
       <div
         v-if="!data || data.length === 0"
         class="el-table__empty-block"
@@ -131,6 +132,20 @@
             width: bodyWidth
           }">
         </table-body>
+        <div class="ctable-bodyWrapper-cover" :style="{top: cTop + 'px'}">
+          <table-body
+            :store="store"
+            rowFixed
+            fixed="left"
+            :stripe="stripe"
+            :row-class-name="rowClassName"
+            :row-style="rowStyle"
+            :highlight="highlightCurrentRow"
+            :style="{
+              width: bodyWidth
+            }">
+          </table-body>
+        </div>
         <div
           v-if="$slots.append"
           class="el-table__append-gutter"
@@ -192,6 +207,20 @@
             width: bodyWidth
           }">
         </table-body>
+        <div class="ctable-bodyWrapper-cover" :style="{top: cTop + 'px'}">
+          <table-body
+            :store="store"
+            rowFixed
+            fixed="right"
+            :stripe="stripe"
+            :row-class-name="rowClassName"
+            :row-style="rowStyle"
+            :highlight="highlightCurrentRow"
+            :style="{
+              width: bodyWidth
+            }">
+          </table-body>
+        </div>
          <div
           v-if="$slots.append"
           class="el-table__append-gutter"
@@ -440,6 +469,7 @@
         if (footerWrapper) footerWrapper.scrollLeft = scrollLeft;
         if (fixedBodyWrapper) fixedBodyWrapper.scrollTop = scrollTop;
         if (rightFixedBodyWrapper) rightFixedBodyWrapper.scrollTop = scrollTop;
+        this.cTop = scrollTop;
         const maxScrollLeftPosition = scrollWidth - offsetWidth - 1;
         if (scrollLeft >= maxScrollLeftPosition) {
           this.scrollPosition = 'right';
@@ -662,6 +692,7 @@
         handler(value) {
           console.log('wathcdata',window.ssD==value)
           this.store.commit('setData', value);
+          this.store.commit('setFixData', value.slice(-2));
         }
       },
 
@@ -740,6 +771,7 @@
       });
       return {
         layout,
+        cTop: 0,
         isHidden: false,
         renderExpanded: null,
         resizeProxyVisible: false,
@@ -760,6 +792,7 @@
   position: relative;
 }
 .ctable-bodyWrapper-cover {
+  box-shadow: 1px 1px 6px rgba(0, 0, 0, .13);
   position: absolute;
   left: 0;
   top: 0;

@@ -26,6 +26,11 @@ Watcher.prototype.mutations = {
     this.updateTableScrollY();
   },
 
+  setFixData(states,data){
+    console.log(states,'sssssssssss',data)
+    states.fixData = data;
+  },
+
   insertColumn(states, column, index, parent) {
     let array = states._columns;
     if (parent) {

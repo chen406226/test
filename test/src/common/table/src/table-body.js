@@ -14,6 +14,7 @@ export default {
     store: {
       required: true
     },
+    rowFixed: Boolean,
     stripe: Boolean,
     context: {},
     rowClassName: [String, Function],
@@ -23,8 +24,7 @@ export default {
   },
 
   render(h) {
-    const data = this.data || [];
-    console.log(data,'ddddddddddd')
+    const data = this.rowFixed? this.fixData || [] : this.data || [];
     return (
       <table
         class="el-table__body"
@@ -55,6 +55,7 @@ export default {
 
     ...mapStates({
       data: 'data',
+      fixData: 'fixData',
       columns: 'columns',
       treeIndent: 'indent',
       leftFixedLeafCount: 'fixedLeafColumnsLength',
@@ -195,6 +196,9 @@ export default {
     },
 
     getCellClass(rowIndex, columnIndex, row, column) {
+      if (this.rowFixed) {
+        console.log(rowIndex, columnIndex, row, column,this.isColumnHidden(columnIndex))
+      }
       const classes = [column.id, column.align, column.className];
 
       if (this.isColumnHidden(columnIndex)) {
