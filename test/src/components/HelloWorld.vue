@@ -1,5 +1,6 @@
 <template>
   <div class="hello">
+    <el-button @click="bTc">舒服</el-button>
     <!-- <h1>{{ msg }}</h1>
     <p>
       For a guide and recipes on how to configure / customize this project,<br>
@@ -27,13 +28,18 @@
       <li><a href="https://vue-loader.vuejs.org" target="_blank" rel="noopener">vue-loader</a></li>
       <li><a href="https://github.com/vuejs/awesome-vue" target="_blank" rel="noopener">awesome-vue</a></li>
     </ul> -->
-    <el-table
+    <Ctable
       :data="tableData"
-      style="width: 100%">
-      <tableColumn v-for="item in tablehead1" :key="item.label" v-bind="item" >
+      @dragChange="dragChange"
+      row-key="name"
+      border
+      max-height="200"
+      :column-data="tablehead2"
+      style="width: 700px">
+      <tableColumn v-for="item in tablehead2" :key="item.label" v-bind="item" >
         <template slot-scope="scope">
           <!-- <div @click="console(scope,item)">{{item.label}}</div> -->
-          <div v-if="scope.column.property=='date'">
+          <div v-if="scope.column.property=='date' || true">
             {{scope.row[scope.column.property]}}
           </div>
           <div v-else>
@@ -47,13 +53,13 @@
           </div> -->
         </template>
       </tableColumn>
-    </el-table>
+    </Ctable>
   </div>
 </template>
 
 <script>
 import tableColumn from './tableColumn'
-
+import Ctable from '../common/table/src/table'
 
 
 export default {
@@ -62,57 +68,60 @@ export default {
     msg: String
   },
   components:{
-    tableColumn
+    tableColumn,Ctable
   },
   methods:{
     console(scope){
       console.log(scope)
+    },
+    bTc(){
+      window.ssD = self = this.tableData
+      // this.tableData
+      let currRow = this.tableData.splice(0, 1)[0]
+
+      this.tableData.splice(1, 0, currRow)
+      console.log(this.tableData==self,this.tableData)
+      // this.tableData.forEach((item)=>console.log(item.name))
+    },
+    dragChange(n,o,d) {
+      console.log(n,o,d,this.tableData==d)
+      this.tableData = d
     }
   },
   data() {
     return {
       tablehead1:[
-        {
-        label:'时间df',
-        prop:'city',
-        align:'center',
-      },
-        {
-        label:'时间',
-        align:'center',
-        children:[
-          // {label:"日期", prop:'date',align:'center',width:100},
-          {label:"姓名",
-            prop:'name',
-            children:[
-              {label:"不实的",prop:'name',align:'center',}
-            ],
-            align:'center',
-          }
-        ]
-      },
+        {label:"姓名",
+          prop:'name',
+          fixed: 'left',
+          columnKey:'name',
+          align:'center',
+        },
       {
         label:'地区',
         align:'center',
+        columnKey:'area',
+
         children:[
-          {label:"省份",prop:'province',align:'center',},
-          {label:"市区",prop:'city',align:'center',},
-          {label:"地址",prop:'address',align:'center',}
+          {label:"省份",prop:'province',columnKey:'province',align:'center',},
+          {label:"市区",prop:'city',columnKey:'infoss',align:'center',},
+          {label:"地址",prop:'address',columnKey:'idfnfo',align:'center',}
         ]
       },{
+        columnKey:'info',
         label:'信息',
         align:'center',
         children:[
-          {label:"邮编",prop:'zip',align:'center',}
+          {label:"邮编",prop:'zip',columnKey:'zip',align:'center',}
         ]
       }
       ],
       tablehead2:[
-          {label:"日期", prop:'date',align:'center',width:100},
+          {label:"日期",fixed:'left', prop:'date',align:'center',width:100},
           {label:"姓名",prop:'name',align:'center',},
           {label:"省份",prop:'province',align:'center',},
           {label:"市区",prop:'city',align:'center',},
-          {label:"地址",prop:'address',align:'center',},
+          {label:"地址",prop:'address',width:300,align:'center',},
           {label:"邮编",prop:'zip',align:'center',}
       ],
       tableData: [{
@@ -124,42 +133,42 @@ export default {
           zip: 200333
         }, {
           date: '2016-05-02',
-          name: '王小虎',
+          name: '张三',
           province: '上海',
           city: '普陀区',
           address: '上海市普陀区金沙江路 1518 弄',
           zip: 200333
         }, {
           date: '2016-05-04',
-          name: '王小虎',
+          name: '李四',
           province: '上海',
           city: '普陀区',
           address: '上海市普陀区金沙江路 1518 弄',
           zip: 200333
         }, {
-          date: '2016-05-01',
-          name: '王小虎',
-          province: '上海',
-          city: '普陀区',
-          address: '上海市普陀区金沙江路 1518 弄',
-          zip: 200333
-        }, {
-          date: '2016-05-08',
-          name: '王小虎',
-          province: '上海',
-          city: '普陀区',
-          address: '上海市普陀区金沙江路 1518 弄',
-          zip: 200333
-        }, {
-          date: '2016-05-06',
-          name: '王小虎',
-          province: '上海',
-          city: '普陀区',
-          address: '上海市普陀区金沙江路 1518 弄',
-          zip: 200333
-        }, {
+        //   date: '2016-05-01',
+        //   name: '陈毅',
+        //   province: '上海',
+        //   city: '普陀区',
+        //   address: '上海市普陀区金沙江路 1518 弄',
+        //   zip: 200333
+        // }, {
+        //   date: '2016-05-08',
+        //   name: '特朗普',
+        //   province: '上海',
+        //   city: '普陀区',
+        //   address: '上海市普陀区金沙江路 1518 弄',
+        //   zip: 200333
+        // }, {
+        //   date: '2016-05-06',
+        //   name: '一万卡',
+        //   province: '上海',
+        //   city: '普陀区',
+        //   address: '上海市普陀区金沙江路 1518 弄',
+        //   zip: 200333
+        // }, {
           date: '2016-05-07',
-          name: '王小虎',
+          name: '夫拉基',
           province: '上海',
           city: '普陀区',
           address: '上海市普陀区金沙江路 1518 弄',

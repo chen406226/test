@@ -1,11 +1,14 @@
 <script>
+import CtableColumn from '@/common/table/src/table-column'
 export default {
   // scopedSlots: self.$scopedSlots,
   name:'tableColumn',
   props:{
     label:{
       type:String
-    }
+    },
+    columnKey: String,
+
   },
   render (h,cont) {
 
@@ -16,10 +19,11 @@ export default {
     this.label = this.$props&&this.$props.label || this.$attrs.label
     let self = this
     if (this.$attrs.prop=='name') {
-      console.log(this,this.$attrs.prop)
+      console.log('dsffdfffffffffffffffffff')
+      // console.log(this,this.$attrs.prop)
     }
     if (this.$props.prop=='name') {
-      console.log(this,'fsdddddddddddddddd')
+      // console.log(this,'fsdddddddddddddddd')
     }
     if (children) {
       // console.log(this.$slots,this.$scopedSlots,'scopeslots')
@@ -31,19 +35,19 @@ export default {
         </tableColumn> )
 
         // 第二种方法 重写， 把prop带进去， 因为那边的item外层没有prop属性， 所以用scope.prop替换item.prop  ckey
-        // return(<el-table-column scopedSlots={{...this.$scopedSlots,default:function(props){
+        // return(<CtableColumn scopedSlots={{...this.$scopedSlots,default:function(props){
         //   return self.$scopedSlots.default({...props,prop:item.prop})
         // }}} {...{props: {...item},attrs:{...item}}}>
         // </el-table-column> )
       })
-      return (<el-table-column  {...{props: {...this.$attrs,...this.$props}}}  label={this.label}>
+      return (<CtableColumn  {...{props: {...this.$attrs,...this.$props}}}  label={this.label}>
         {list}
-      </el-table-column>)
+      </CtableColumn>)
     }else{
-      console.log('dsfffff')
+      // console.log('dsfffff')
       // console.log(this.$slots,this.$scopedSlots,'ccccccccc')
-      return (<el-table-column cellClick={()=>{console.log('click')}} scopedSlots={this.$scopedSlots} {...{props: {...this.$attrs,...this.$props}}} label={this.label}>
-      </el-table-column>)
+      return (<CtableColumn cellClick={()=>{console.log('click')}} scopedSlots={this.$scopedSlots} {...{props: {...this.$attrs,...this.$props}}} label={this.label}>
+      </CtableColumn>)
     }
   }
 }
