@@ -31,20 +31,23 @@
     <Ctable
       :data="tableData"
       @dragChange="dragChange"
-      row-key="name"
+      row-key="id"
+      :rowFixData="[]"
+      :tree-props="{children: 'children', hasChildren: 'hasChildren'}"
       border
-      max-height="200"
+      max-height="500"
       :column-data="tablehead2"
       style="width: 700px">
       <tableColumn v-for="item in tablehead2" :key="item.label" v-bind="item" >
         <template slot-scope="scope">
           <!-- <div @click="console(scope,item)">{{item.label}}</div> -->
-          <div v-if="scope.column.property=='date' || true">
+          <span>{{scope.row[scope.column.property]}}</span>
+          <!-- <div v-if="scope.column.property=='date' || true">
             {{scope.row[scope.column.property]}}
           </div>
           <div v-else>
             <el-input type='text' v-model="scope.row[scope.column.property]"></el-input>
-          </div>
+          </div> -->
           <!-- <div v-if="scope.prop=='date'"> 第二种方法
             {{scope.row[scope.prop]}}
           </div>
@@ -94,6 +97,7 @@ export default {
         {label:"姓名",
           prop:'name',
           fixed: 'left',
+          width: 150,
           columnKey:'name',
           align:'center',
         },
@@ -117,7 +121,7 @@ export default {
       }
       ],
       tablehead2:[
-          {label:"日期",fixed:'left', prop:'date',align:'center',width:100},
+          {label:"日期",prop:'date',align:'center',width:200},
           {label:"姓名",prop:'name',align:'center',},
           {label:"省份",prop:'province',align:'center',},
           {label:"市区",prop:'city',align:'center',},
@@ -127,25 +131,44 @@ export default {
       tableData: [{
           date: '2016-05-03',
           name: '王小虎',
+          id: 12,
           province: '上海',
           city: '普陀区',
           address: '上海市普陀区金沙江路 1518 弄',
+          children: [{
+            date: '2013-05-02',
+            name: '张三丰',
+            id: 13,
+            province: '上海',
+            city: '普陀区',
+            children: [{
+              date: '2013-05-02',
+              name: '李四',
+              id: 18,
+              province: '上海',
+              city: '普陀区',
+              address: '上海市普陀区金沙江路 1518 弄',
+              zip: 200333
+            }],
+            address: '上海市普陀区金沙江路 1518 弄',
+            zip: 200333
+          }],
           zip: 200333
         }, {
-          date: '2016-05-02',
-          name: '张三',
-          province: '上海',
-          city: '普陀区',
-          address: '上海市普陀区金沙江路 1518 弄',
-          zip: 200333
-        }, {
-          date: '2016-05-04',
-          name: '李四',
-          province: '上海',
-          city: '普陀区',
-          address: '上海市普陀区金沙江路 1518 弄',
-          zip: 200333
-        }, {
+        //   date: '2016-05-02',
+        //   name: '张三',
+        //   province: '上海',
+        //   city: '普陀区',
+        //   address: '上海市普陀区金沙江路 1518 弄',
+        //   zip: 200333
+        // }, {
+        //   date: '2016-05-04',
+        //   name: '李四',
+        //   province: '上海',
+        //   city: '普陀区',
+        //   address: '上海市普陀区金沙江路 1518 弄',
+        //   zip: 200333
+        // }, {
         //   date: '2016-05-01',
         //   name: '陈毅',
         //   province: '上海',
@@ -168,6 +191,7 @@ export default {
         //   zip: 200333
         // }, {
           date: '2016-05-07',
+          id: 14,
           name: '夫拉基',
           province: '上海',
           city: '普陀区',

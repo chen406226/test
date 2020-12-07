@@ -391,6 +391,7 @@ export default {
       const store = this.store;
       const { isRowExpanded, assertRowKey } = store;
       const { treeData, lazyTreeNodeMap, childrenColumnName, rowKey } = store.states;
+      console.log('eeeeeeeeeeeeeee',this.hasExpandColumn,isRowExpanded(row),row)
       if (this.hasExpandColumn && isRowExpanded(row)) {
         const renderExpanded = this.table.renderExpanded;
         const tr = this.rowRender(row, $index);
@@ -412,6 +413,7 @@ export default {
         // 在调用 rowRender 函数时，仍然会计算 rowKey，不太好的操作
         const key = getRowIdentity(row, rowKey);
         let cur = treeData[key];
+        console.log(row['name'],cur,'ccccccccccccc',key,treeData)
         let treeRowData = null;
         if (cur) {
           treeRowData = {

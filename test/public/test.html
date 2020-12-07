@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+	<script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
+  <style>
+    .icc span{
+      position: relative;
+      display: inline-block;
+    }
+    .icc span::after{
+      content: '\2194';
+      width: '100%';
+      height: '100%';
+      position: absolute;
+      top: 0;
+      left: 6px;
+      /* transform: rotate(90deg); */
+    }
+  </style>  
+</head>
+<body>
+<div class="icc">
+  <span>&harr;</span>
+</div>
+<div>
+<svg width="100" height="100"  xmlns="http://www.w3.org/2000/svg" style="outline: 1px solid green;" version="1.1">
+  <line stroke-dasharray="5,5" x1="30" y1="70" x2="30" y2="100" style="stroke:rgb(255,0,0);stroke-width:2" />
+</svg>
+</div>
+<div>
+<svg width="100" height="100"  xmlns="http://www.w3.org/2000/svg" style="outline: 1px solid green;" version="1.1">
+  <line stroke-dasharray="5,5" x1="30" y1="0" x2="30" y2="100" style="stroke:rgb(255,0,0);stroke-width:2" />
+  <line stroke-dasharray="5,5" x1="30" y1="50" x2="70" y2="50" style="stroke:rgb(255,0,0);stroke-width:2" />
+</svg>
+</div>
+<div>
+<svg width="100" height="100"  xmlns="http://www.w3.org/2000/svg" style="outline: 1px solid green;" version="1.1">
+  <line stroke-dasharray="5,5" x1="30" y1="0" x2="30" y2="100" style="stroke:rgb(255,0,0);stroke-width:2" />
+  <line stroke-dasharray="5,5" x1="30" y1="50" x2="70" y2="50" style="stroke:rgb(255,0,0);stroke-width:2" />
+  <line stroke-dasharray="5,5" x1="85" y1="70" x2="85" y2="100" style="stroke:rgb(255,0,0);stroke-width:2" />
+</svg>
+</div>
+<div>
+<svg width="100" height="100"  xmlns="http://www.w3.org/2000/svg" style="outline: 1px solid green;" version="1.1">
+  <line stroke-dasharray="5,5" x1="30" y1="0" x2="30" y2="50" style="stroke:rgb(255,0,0);stroke-width:2" />
+  <line stroke-dasharray="5,5" x1="30" y1="50" x2="70" y2="50" style="stroke:rgb(255,0,0);stroke-width:2" />
+</svg>
+</div>
+<ul id="items">
+  <li data-id="1">order</li>
+  <li data-id="2">save</li>
+  <li data-id="3">restore</li>
+</ul>
+</body>
+<script>
+var el = document.getElementById("items");
+Sortable.create(el, {
+  group: "localStorage-example",
+  onEnd: function (/**Event*/ evt) {
+    var itemEl = evt.item; // dragged HTMLElement
+    evt.to; // target list
+    evt.from; // previous list
+    evt.oldIndex; // element's old index within old parent
+    evt.newIndex; // element's new index within new parent
+    evt.oldDraggableIndex; // element's old index within old parent, only counting draggable elements
+    evt.newDraggableIndex; // element's new index within new parent, only counting draggable elements
+    evt.clone; // the clone element
+    evt.pullMode; // when item is in another sortable: `"clone"` if cloning, `true` if moving
+    console.log(evt)
+},
+onChange: function (/**Event*/ evt) {
+    evt.newIndex; // most likely why this event is used is to get the dragging element's current index
+    // same properties as onEnd
+    // console.log(evt)
+  },
+  store: {
+    /**
+     * Get the order of elements. Called once during initialization.
+     * @param   {Sortable}  sortable
+     * @returns {Array}
+     */
+    get: function (sortable) {
+        console.log(sortable,'get')
+      var order = localStorage.getItem(sortable.options.group.name);
+      return order ? order.split("|") : [];
+    },
+
+    /**
+     * Save the order of elements. Called onEnd (when the item is dropped).
+     * @param {Sortable}  sortable
+     */
+    set: function (sortable) {
+        console.log(sortable,'set')
+
+      var order = sortable.toArray();
+      localStorage.setItem(sortable.options.group.name, order.join("|"));
+    },
+  },
+});
+let str = '3*(2+3)'
+let res
+try{
+    res=eval(str)    
+    if (res!=0&&!res) {
+        console.log('kong') 
+    }else{
+        console.log(res)
+    }
+}catch(e){
+    console.log('错了')
+}
+
+window.obj = {inputV:3}
+Object.defineProperty(obj, 'inputs', {
+  get: function () {
+
+    return this.inputV
+  },
+  set: function (newValue) {
+    this.inputV = newValue
+    console.log(this)
+  }
+})
+var m = obj.inputs
+console.log(m)
+// m=22
+window.obj.inputs = 32
+console.log(m)
+// return
+console.log('ssssssssssssssssssssssssssssssssssssss')
+function parseUrl(url) {
+    let match = url.match(/(^https?)\:\/\/([^\:\/\#\?]*)([^\?\#]*)(\?[^\#]*|)(\#.*|)/)
+    let list=match[4].slice(1).split('&')
+    let params={}
+    list.forEach((item)=>{
+        let p=item.split("=")
+        params[p[0]]=p[1]
+    })
+    return {
+        protocol: match[1],
+        host: match[2],
+        path: match[3],
+        params,
+        hash: match[5].length>0?match[5].slice(1):'',
+    }
+}
+parseUrl('https://www.baidu.com/webpc/page1?se=m&le=&sfe=#dsff')
+
+var obj = [
+    { id:3, parent:2 },
+    { id:1, parent:null },
+    { id:4, parent:null },
+    { id:7, parent:4 },
+    { id:6, parent:4 },
+    { id:2, parent:1 },
+]
+function toTree1(arr) {
+    let array = arr.map((item)=>Object.assign({children:[]},item))
+    let res=[]
+    array.forEach((item,index)=>{
+        if (!item.parent) {
+            res.push(item)
+        }
+        array.some((node)=>{
+            if (item.parent==node.id) {
+                node.children.push(item)
+                return true
+            }
+        })
+    })
+    return res
+} 
+console.log(toTree1(obj))
+
+
+function toTree(arr) {
+    var res=[]
+    let acArr=JSON.parse(JSON.stringify(arr))
+    arr.forEach((item,index)=>{
+        if (!item.parent) {
+            let obj={}
+            obj.id=item.id
+            obj.parent=item.parent
+            // acArr.splice(index,1)
+            obj.child=iter(item.id,acArr)
+            res.push(obj)
+        }
+    })
+    return res
+} 
+function iter(pid,arr) {
+    let child=[]
+
+    arr.forEach((item,index)=>{
+        if (item.parent==pid) {
+            var obj={}
+            obj.id=item.id
+            obj.parent=item.parent
+            // arr.splice(index,1)
+            obj.child=iter(item.id,arr)
+            child.push(obj)
+        }
+    })
+    return child
+}
+// toTree(obj)
+
+function AllPlayer(person) {
+    this.personList=person||[]
+}
+AllPlayer.prototype.add=function(newP){
+    if (typeof newP === 'string') {
+        this.personList.push(newP)
+    }else if (newP instanceof Array) {
+        this.personList=this.personList.concat(newP)
+    }else{
+        console.error("参数错误")
+    }
+}
+AllPlayer.prototype.get=function(name){
+    return this.personList.reduce((a,p)=>p===name?a+1:a,0)
+}
+Player=new AllPlayer(['张三','李四','王五','赵六','Tom','Jack','Jerry'])
+Player.get('王二麻子')
+Player.add(['张三','张三丰'])
+Player.add('张三')
+Player.get('张三')
+Player.get('张三')
+   
+
+  
+
+
+
+function sort(array) {
+    for (let i = 0; i < array.length; i++) {
+        var e = array[i];
+        for (let j = i+1; j < array.length; j++) {
+            const el = array[j];
+            if (e<=el) {
+                e = el
+                array[j]=array[i]
+                array[i]=e
+    console.log(array,i,j)
+
+            }
+        }
+    }
+    console.log(array)
+}
+// sort([3,5,6,1,2])
+// sort([4,3,2,1,6,8,7,4])
+
+function aa(){
+    console.log('a',this.name)
+}
+function bb(){
+    console.log('b',this.name)
+}
+aa.apply(bb,[])
+// a bb
+
+
+    var sum = 0;
+    var suum = 0;
+    function wuxing(array) {
+        var s = 1;
+        array.forEach(item => {
+            s *= item;
+        });
+        console.log(s)
+    }
+    function er(array) {
+        for (let i = 0; i < array.length - 1; i++) {
+            const e = array[i];
+            for (let j = i + 1; j < array.length; j++) {
+                const el = array[j];
+                sum += e * el
+            }
+        }
+        console.log(sum)
+    }
+
+    //任三  前三
+    function san(array) {
+        for (let i = 0; i < array.length - 2; i++) {
+            const e = array[i];
+            for (let j = i + 1; j < array.length - 1; j++) {
+                const el = array[j];
+                for (let k = j + 1; k < array.length; k++) {
+                    const ele = array[k];
+                    suum += e * el * ele
+                }
+            }
+        }
+        console.log(suum)
+    }
+    //后三和，前三和
+    function housan(array) {
+        return array.length
+    }
+    function rensi(array) {
+        var suum = 0;
+        for (let i = 0; i < array.length - 3; i++) {
+            const e = array[i];
+            for (let j = i + 1; j < array.length - 2; j++) {
+                const el = array[j];
+                for (let k = j + 1; k < array.length - 1; k++) {
+                    const ele = array[k];
+                    for (let o = k + 1; o < array.length; o++) {
+                        const elem = array[o];
+                        suum += e * el * ele * elem
+                    }
+                }
+            }
+        }
+        console.log(suum + "任四")
+    }
+    function qianerzhi(array) {
+        return array[0] * array[1]
+    }
+    function qianerzuxuanfushi(array) {
+        return (array.length * (array.length - 1)) / 2
+    }
+    er([2, 3, 4])
+    san([2, 3, 4])
+    wuxing([2, 2, 2])
+    rensi([2, 2, 2, 2])
+</script>
+
+</html>

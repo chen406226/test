@@ -103,21 +103,43 @@ export function treeCellPrefix(h, { row, treeNode, store }) {
     e.stopPropagation();
     store.loadOrToggle(row);
   };
+  let iconCoverClasses = ['c-icon-arrow-cover'];
+  // 站位
+  ele.push(<span class="c-icon-arrow-cover-zhanwei" style={{'padding-left': '20px'}}></span>);
   if (treeNode.indent) {
     ele.push(<span class="el-table__indent" style={{'padding-left': treeNode.indent + 'px'}}></span>);
+    iconCoverClasses.push('c-icon-arrow-cover-level')
   }
+  console.log(treeNode,'noddddddddddddddddddddd')
+
   if (typeof treeNode.expanded === 'boolean' && !treeNode.noLazyChildren) {
     const expandClasses = ['el-table__expand-icon', treeNode.expanded ? 'el-table__expand-icon--expanded' : ''];
-    let iconClasses = ['el-icon-arrow-right'];
+    let iconClasses = ['el-icon-plus','c-icon-border'];
+    if (treeNode.expanded) {
+      iconClasses.splice(0,1,'el-icon-minus')
+    }
     if (treeNode.loading) {
       iconClasses = ['el-icon-loading'];
     }
-    ele.push(<div class={ expandClasses }
-      on-click={ callback }>
-      <i class={ iconClasses }></i>
+    // let iconClasses = ['el-icon-arrow-right'];
+    // ele.push(<div class={ expandClasses }
+    //   on-click={ callback }>
+    //   <i class={ iconClasses }></i>
+    // </div>);
+    ele.push(<div class={iconCoverClasses}>
+      <div class={ expandClasses }
+        on-click={ callback }>
+        <i class={ iconClasses }></i>
+      </div>
+      <div class='c-icon-arrow-bg'></div>
     </div>);
   } else {
-    ele.push(<span class="el-table__placeholder"></span>);
+
+    // ele.push(<span class="el-table__placeholder"></span>);
+    ele.push(<div class='c-icon-arrow-cover c-icon-arrow-cover-level'>
+      <span class="el-table__placeholder"></span>
+      <div class='c-icon-arrow-bg'></div>
+    </div>);
   }
   return ele;
 }

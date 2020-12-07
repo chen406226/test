@@ -46,10 +46,10 @@
            width: bodyWidth
         }">
       </table-body>
-      <div class="ctable-bodyWrapper-cover" :style="{top: cTop + 'px'}">
+      <div v-if="rowFixData && rowFixData.length" class="ctable-bodyWrapper-cover" :style="{top: cTop + 'px'}">
         <table-body
           :store="store"
-          rowFixed
+          :rowFixed="false"
           :stripe="stripe"
           :row-class-name="rowClassName"
           :row-style="rowStyle"
@@ -132,10 +132,10 @@
             width: bodyWidth
           }">
         </table-body>
-        <div class="ctable-bodyWrapper-cover" :style="{top: cTop + 'px'}">
+        <div v-if="rowFixData && rowFixData.length" class="ctable-bodyWrapper-cover" :style="{top: cTop + 'px'}">
           <table-body
             :store="store"
-            rowFixed
+            :rowFixed="false"
             fixed="left"
             :stripe="stripe"
             :row-class-name="rowClassName"
@@ -207,10 +207,10 @@
             width: bodyWidth
           }">
         </table-body>
-        <div class="ctable-bodyWrapper-cover" :style="{top: cTop + 'px'}">
+        <div v-if="rowFixData && rowFixData.length" class="ctable-bodyWrapper-cover" :style="{top: cTop + 'px'}">
           <table-body
             :store="store"
-            rowFixed
+            :rowFixed="false"
             fixed="right"
             :stripe="stripe"
             :row-class-name="rowClassName"
@@ -297,6 +297,12 @@
       maxHeight: [String, Number],
 
       columnData: {
+        type: Array,
+        default: function() {
+          return []
+        }
+      },
+      rowFixData: {
         type: Array,
         default: function() {
           return []
@@ -797,4 +803,62 @@
   left: 0;
   top: 0;
 }
+.c-icon-arrow-bg {
+  height: 46px;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 20px;
+  pointer-events: none;
+  /* transform: translateX(-100%); */
+  /* left: 0; */
+  /* background: red; */
+}
+.c-icon-arrow-cover-level .c-icon-arrow-bg {
+  width: 35px;
+}
+.c-icon-arrow-cover{
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: flex;
+  height: 100%;
+  align-items: center;
+}
+.c-icon-arrow-cover-level {
+  padding-left: 15px;
+}
+.c-icon-border {
+  border: 1px dashed #666;
+}
+.c-icon-arrow {
+    position: relative;
+    width: 20px;
+    align-items: center;
+    height: 20px;
+    text-align: center;
+    display: inline-block;
+}
+/* tr[class*='el-table__row--level-']:not(.el-table__row--level-0){
+  background: yellow;
+} */
+.c-icon-arrow-normal {
+    position: absolute;
+    width: 20px;
+    align-items: center;
+    height: 20px;
+    text-align: center;
+    display: inline-block;
+}
+.c-icon-arrow::after {
+    content: '\2194';
+    width: 26px;
+    height: 26px;
+    position: absolute;
+    top: 0;
+    left: 0px;
+    transform-origin: 50% 47%;
+    transform: rotate(90deg);
+}
+
 </style>
