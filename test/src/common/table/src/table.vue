@@ -806,17 +806,12 @@
 .c-icon-arrow-bg {
   height: 46px;
   position: absolute;
+  width: 100%;
   top: 0;
   left: 0;
-  width: 20px;
   pointer-events: none;
-  /* transform: translateX(-100%); */
-  /* left: 0; */
-  /* background: red; */
 }
-.c-icon-arrow-cover-level .c-icon-arrow-bg {
-  width: 35px;
-}
+
 .c-icon-arrow-cover{
   position: absolute;
   top: 0;
@@ -825,11 +820,17 @@
   height: 100%;
   align-items: center;
 }
-.c-icon-arrow-cover-level {
-  padding-left: 15px;
+.el-table .c-icon-arrow-cover div.el-table__expand-icon{
+  margin: 0;
+}
+.c-icon-arrow-cover-level .w20{
+  width: 20px;
 }
 .c-icon-border {
   border: 1px dashed #666;
+}
+div.el-table__expand-icon:not(.el-table__expand-icon--expanded) + div.c-icon-arrow-bg div:first-child{
+  background: none;
 }
 .c-icon-arrow {
     position: relative;
@@ -842,6 +843,52 @@
 /* tr[class*='el-table__row--level-']:not(.el-table__row--level-0){
   background: yellow;
 } */
+/* .el-table__row--level-0 .c-icon-arrow-bg{
+  background-image: url('../../../assets/f1.svg');
+      background-size: 100% 100% ;
+    background-repeat: no-repeat;
+} */
+.c-icon-arrow-bg{
+    display: flex;
+    flex-direction: row-reverse;
+}
+.c-icon-arrow-bg div.veril{
+  background-image: url('../../../assets/f1.svg');
+      background-size: 100% 100% ;
+    background-repeat: no-repeat;
+}
+.c-icon-arrow-bg div.shu{
+  background-image: url('../../../assets/shu.svg');
+      background-size: 100% 100% ;
+    background-repeat: no-repeat;
+}
+
+.c-icon-arrow-bg div.l {
+  background-image: url('../../../assets/c9.svg');
+  background-size: 100% 100% ;
+  background-repeat: no-repeat;
+}
+.c-icon-arrow-bg div.tu {
+  background-image: url('../../../assets/tu.svg');
+  background-size: 100% 100% ;
+  background-repeat: no-repeat;
+}
+
+
+.c-icon-arrow-bg .c-icon-child-end-node{
+  background-image: url('../../../assets/cm.svg');
+  background-size: 100% 100% ;
+  background-repeat: no-repeat;
+}
+.c-icon-arrow-bg.no-expanded .middle{
+  background-image: url('../../../assets/cm.svg');
+  background-size: 100% 100% ;
+  background-repeat: no-repeat;
+}
+.c-icon-arrow-bg div{
+  width: 20px;
+  height: 100%;
+}
 .c-icon-arrow-normal {
     position: absolute;
     width: 20px;

@@ -1,6 +1,7 @@
 <template>
   <div class="hello">
     <el-button @click="bTc">舒服</el-button>
+    <img src="../assets/f1.svg" alt="" srcset="">
     <!-- <h1>{{ msg }}</h1>
     <p>
       For a guide and recipes on how to configure / customize this project,<br>
@@ -141,15 +142,57 @@ export default {
             id: 13,
             province: '上海',
             city: '普陀区',
+            address: '上海市普陀区金沙江路 1518 弄',
+            zip: 200333
+          },{
+            date: '2013-05-02',
+            name: '看丰',
+            id: 43,
+            province: '上海',
+            city: '普陀区',
             children: [{
               date: '2013-05-02',
               name: '李四',
-              id: 18,
+              id: 58,
+              province: '上海',
+              city: '普陀区',
+              address: '上海市普陀区金沙江路 1518 弄',
+              zip: 200333
+            },{
+            date: '2013-05-02',
+            name: '看34丰',
+            id: 4343,
+            province: '上海',
+            city: '普陀区',
+            children: [{
+              date: '2013-05-02',
+              name: '李s四',
+              id: 538,
               province: '上海',
               city: '普陀区',
               address: '上海市普陀区金沙江路 1518 弄',
               zip: 200333
             }],
+            address: '上海市普陀区金沙江路 1518 弄',
+            zip: 200333
+            },{
+            date: '2013-05-02',
+            name: '23看',
+            id: 43243,
+            province: '上海',
+            city: '普陀区',
+            children: [{
+              date: '2013-05-02',
+              name: '23',
+              id: 55438,
+              province: '上海',
+              city: '普陀区',
+              address: '上海市普陀区金沙江路 1518 弄',
+              zip: 200333
+            }],
+            address: '上海市普陀区金沙江路 1518 弄',
+            zip: 200333
+          }],
             address: '上海市普陀区金沙江路 1518 弄',
             zip: 200333
           }],

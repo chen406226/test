@@ -103,14 +103,19 @@ export function treeCellPrefix(h, { row, treeNode, store }) {
     e.stopPropagation();
     store.loadOrToggle(row);
   };
+  let isLast = row.isClast || false
+  let fatherIsLast = row.fatherIsLast || false
   let iconCoverClasses = ['c-icon-arrow-cover'];
+  if (treeNode.indent) {
+    iconCoverClasses.push('c-icon-arrow-cover-f')
+  }
   // 站位
   ele.push(<span class="c-icon-arrow-cover-zhanwei" style={{'padding-left': '20px'}}></span>);
   if (treeNode.indent) {
     ele.push(<span class="el-table__indent" style={{'padding-left': treeNode.indent + 'px'}}></span>);
     iconCoverClasses.push('c-icon-arrow-cover-level')
   }
-  console.log(treeNode,'noddddddddddddddddddddd')
+  console.log(treeNode, row ,store,'noddddddddddddddddddddd')
 
   if (typeof treeNode.expanded === 'boolean' && !treeNode.noLazyChildren) {
     const expandClasses = ['el-table__expand-icon', treeNode.expanded ? 'el-table__expand-icon--expanded' : ''];
@@ -126,19 +131,77 @@ export function treeCellPrefix(h, { row, treeNode, store }) {
     //   on-click={ callback }>
     //   <i class={ iconClasses }></i>
     // </div>);
+    let cent = null
+    // row-reverse
+    if (treeNode.level>=2) {
+      cent = []
+      let n = treeNode.level
+      do {
+        cent.push(<div class="middle"></div>)
+        n--
+      } while (n>=2);
+    }
+    let zhanwei = null
+    if (treeNode.level>=1) {
+      zhanwei = []
+      let n = treeNode.level
+      do {
+        zhanwei.push(<div class="w20"></div>)
+        n--
+      } while (n>=1);
+    }
+    let firstC = []
+    if (isLast) {
+      firstC = 'isLast'
+    }
     ele.push(<div class={iconCoverClasses}>
+      {zhanwei}
       <div class={ expandClasses }
         on-click={ callback }>
         <i class={ iconClasses }></i>
       </div>
-      <div class='c-icon-arrow-bg'></div>
-    </div>);
+      <div class='c-icon-arrow-bg'>
+        <div class="veril"></div>
+        {
+          treeNode.level >=1 ?<div class={isLast?'l':'tu'}></div> : null
+        }
+        {
+          treeNode.level >=2 && !fatherIsLast ?<div class='shu'></div> : null
+        }
+      </div>
+    </div>)
   } else {
-
+    let cent = null
+    if (treeNode.level>=2) {
+      cent = []
+      let n = treeNode.level
+      do {
+        cent.push(<div class="middle"></div>)
+        n--
+      } while (n>=2);
+    }
+    let zhanwei = null
+    if (treeNode.level>=1) {
+      zhanwei = []
+      let n = treeNode.level
+      do {
+        zhanwei.push(<div class="w20"></div>)
+        n--
+      } while (n>=1);
+    }
     // ele.push(<span class="el-table__placeholder"></span>);
     ele.push(<div class='c-icon-arrow-cover c-icon-arrow-cover-level'>
+      {zhanwei}
       <span class="el-table__placeholder"></span>
-      <div class='c-icon-arrow-bg'></div>
+      <div class='c-icon-arrow-bg no-expanded'>
+        <div class='c-icon-child-end-node'></div>
+        {
+          treeNode.level >=1 ?<div class={isLast?'l':'tu'}></div> : null
+        }
+        {
+          treeNode.level >=2 && !fatherIsLast ?<div class='shu'></div> : null
+        }
+      </div>
     </div>);
   }
   return ele;

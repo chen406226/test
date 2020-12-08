@@ -310,6 +310,37 @@ export default {
       table.$emit(`row-${name}`, row, column, event);
     },
 
+    setLastIndexChildRow(row) {
+      let childrenKey = this.store.states.childrenColumnName
+      if (row.hasOwnProperty(childrenKey) && row[childrenKey].length) {
+        // row[childrenKey][row[childrenKey].length - 1]['isClast'] = true
+        this.setDeepLastIndexChildRow(row[childrenKey],childrenKey,false)
+        // let r = row[childrenKey][row[childrenKey].length - 1]
+        // if (r.hasOwnProperty(childrenKey) && r[childrenKey].length) {
+        //   this.setDeepLastIndexChildRow(r[childrenKey],childrenKey)
+        // }
+      }
+    },
+    setDeepLastIndexChildRow(list,k,fatherIsLast) {
+      list[list.length - 1]['isClast'] = true
+      list.forEach((row,index) => {
+        if (fatherIsLast) {
+          row['fatherIsLast'] = true
+        }
+        if (row.hasOwnProperty(k) && row[k].length) {
+          this.setDeepLastIndexChildRow(row[k], k, index == list.length -1)
+        }
+      })
+    },
+    // setDeepLastIndexChildRow(list,k) {
+    //   list.forEach((row) => {
+    //     row['isClast'] = true
+    //     if (row.hasOwnProperty(k) && row[k].length) {
+    //       this.setDeepLastIndexChildRow(row[k],k)
+    //     }
+    //   })
+    // },
+
     rowRender(row, $index, treeRowData) {
       const { treeIndent, columns, firstDefaultColumnIndex } = this;
       const columnsHidden = columns.map((column, index) => this.isColumnHidden(index));
@@ -388,10 +419,12 @@ export default {
     },
 
     wrappedRowRender(row, $index) {
+      console.log(row,'rrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr')
       const store = this.store;
       const { isRowExpanded, assertRowKey } = store;
       const { treeData, lazyTreeNodeMap, childrenColumnName, rowKey } = store.states;
       console.log('eeeeeeeeeeeeeee',this.hasExpandColumn,isRowExpanded(row),row)
+      this.setLastIndexChildRow(row)
       if (this.hasExpandColumn && isRowExpanded(row)) {
         const renderExpanded = this.table.renderExpanded;
         const tr = this.rowRender(row, $index);
