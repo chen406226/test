@@ -255,19 +255,20 @@
 </template>
 
 <script type="text/babel">
-  import ElCheckbox from 'element-ui/packages/checkbox';
-  import { debounce, throttle } from 'throttle-debounce';
-  import { addResizeListener, removeResizeListener } from 'element-ui/src/utils/resize-event';
-  import Mousewheel from 'element-ui/src/directives/mousewheel';
-  import Locale from 'element-ui/src/mixins/locale';
-  import Migrating from 'element-ui/src/mixins/migrating';
-  import { createStore, mapStates } from './store/helper';
-  import TableLayout from './table-layout';
-  import TableBody from './table-body';
-  import TableHeader from './table-header';
-  import TableFooter from './table-footer';
-  import { parseHeight } from './util';
-  import Sortable from 'sortablejs'
+import ElCheckbox from 'element-ui/packages/checkbox';
+import { debounce, throttle } from 'throttle-debounce';
+import { addResizeListener, removeResizeListener } from 'element-ui/src/utils/resize-event';
+import Mousewheel from 'element-ui/src/directives/mousewheel';
+import Locale from 'element-ui/src/mixins/locale';
+import Migrating from 'element-ui/src/mixins/migrating';
+import { createStore, mapStates } from './store/helper';
+import TableLayout from './table-layout';
+import TableBody from './table-body';
+import TableHeader from './table-header';
+import TableFooter from './table-footer';
+import { parseHeight } from './util';
+import Sortable from 'sortablejs'
+import {listTree} from './store/defspre'
 
   let tableIdSeed = 1;
 
@@ -545,8 +546,27 @@
             // handle: '.drag-btn',
             handle: '.el-table__row',
             onEnd: ({ newIndex, oldIndex }) => {
-              let currRow = this.data.splice(oldIndex, 1)[0]
-              this.data.splice(newIndex, 0, currRow)
+              let childrenKey = this.store.states.childrenColumnName
+              let nR = listTree.listTreeData[listTree.listIndexGetRowKey[newIndex]]
+              let oR = listTree.listTreeData[listTree.listIndexGetRowKey[oldIndex]]
+              let currRow
+              if (nR.parent == null) {
+                currRow = this.data.splice(nR.index, 1)[0]
+                this.data.splice(nR.index, 0, oR['row'])
+              } else {
+                let nRp = listTree.listTreeData[nR.parent]
+                currRow = nRp['row'][childrenKey].splice(nR.index, 1)[0]
+                nRp['row'][childrenKey].splice(nR.index, 0,oR['row'])
+              }
+              if (oR.parent == null) {
+                currRow = this.data.splice(oR.index, 1)[0]
+                this.data.splice(oR.index, 0, nR['row'])
+              } else {
+                let oRp = listTree.listTreeData[oR.parent]
+                currRow = oRp['row'][childrenKey].splice(oR.index, 1)[0]
+                oRp['row'][childrenKey].splice(oR.index, 0,nR['row'])
+              }
+
             }
           })
         })
@@ -767,6 +787,7 @@
         lazyColumnIdentifier: hasChildren,
         childrenColumnName: children
       });
+      console.log(this.store,'sssssssssssssss')
       const layout = new TableLayout({
         store: this.store,
         table: this,

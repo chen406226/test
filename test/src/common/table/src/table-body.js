@@ -4,6 +4,9 @@ import { getStyle, hasClass, removeClass, addClass } from 'element-ui/src/utils/
 import debounce from 'throttle-debounce/debounce';
 import LayoutObserver from './layout-observer';
 import { mapStates } from './store/helper';
+import {listTree} from './store/defspre'
+
+console.log(listTree,'ssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss')
 
 export default {
   name: 'ElTableBody',
@@ -310,23 +313,36 @@ export default {
       table.$emit(`row-${name}`, row, column, event);
     },
 
-    setLastIndexChildRow(row) {
+    setLastIndexChildRow(row, $index) {
       let childrenKey = this.store.states.childrenColumnName
+      let rowKey = this.store.states.rowKey
+      console.log(listTree,'uuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuu')
+      if ($index == 0) {
+        console.log(listTree)
+        listTree.listLength = 0
+      }
+      listTree.listIndexGetRowKey[listTree.listLength] = row[rowKey]
+      listTree.listTreeData[row[rowKey]] = {parent: null, index: $index,row,listLength:listTree.listLength}
+      listTree.listLength += 1
       if (row.hasOwnProperty(childrenKey) && row[childrenKey].length) {
         // row[childrenKey][row[childrenKey].length - 1]['isClast'] = true
-        this.setDeepLastIndexChildRow(row[childrenKey],childrenKey,false,0,'')
+        this.setDeepLastIndexChildRow(row[childrenKey],childrenKey,false,0,'',row[rowKey])
         // let r = row[childrenKey][row[childrenKey].length - 1]
         // if (r.hasOwnProperty(childrenKey) && r[childrenKey].length) {
         //   this.setDeepLastIndexChildRow(r[childrenKey],childrenKey)
         // }
       }
     },
-    setDeepLastIndexChildRow(list,k,fatherIsLast,level,fL) {
+    setDeepLastIndexChildRow(list,k,fatherIsLast,level,fL,p) {
+      let rowKey = this.store.states.rowKey
       let fll=fL
       list[list.length - 1]['isClast'] = true
       list.forEach((row,index) => {
+        listTree.listIndexGetRowKey[listTree.listLength] = row[rowKey]
+        listTree.listTreeData[row[rowKey]] = {parent: p, index,row,listLength:listTree.listLength}
+        listTree.listLength += 1
         if (fatherIsLast) {
-          console.log(row['name'],'mmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmm')
+          // console.log(row['name'],'mmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmm')
           row['fatherIsLast'] = true
           fll = fL ? fL + ',' + level.toString():level.toString()
         }
@@ -428,7 +444,7 @@ export default {
       const { isRowExpanded, assertRowKey } = store;
       const { treeData, lazyTreeNodeMap, childrenColumnName, rowKey } = store.states;
       console.log('eeeeeeeeeeeeeee',this.hasExpandColumn,isRowExpanded(row),row)
-      this.setLastIndexChildRow(row)
+      this.setLastIndexChildRow(row, $index)
       if (this.hasExpandColumn && isRowExpanded(row)) {
         const renderExpanded = this.table.renderExpanded;
         const tr = this.rowRender(row, $index);

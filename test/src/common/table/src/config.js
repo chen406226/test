@@ -105,6 +105,7 @@ export function treeCellPrefix(h, { row, treeNode, store }) {
   };
   let isLast = row.isClast || false
   let fatherIsLast = row.fatherIsLast || false
+  let fathers = row.fatherTreeIsLast
   let iconCoverClasses = ['c-icon-arrow-cover'];
   if (treeNode.indent) {
     iconCoverClasses.push('c-icon-arrow-cover-f')
@@ -132,14 +133,14 @@ export function treeCellPrefix(h, { row, treeNode, store }) {
     //   <i class={ iconClasses }></i>
     // </div>);
     let cent = null
-    // row-reverse
-    if (treeNode.level>=2) {
+    if (treeNode.level>=3) {
       cent = []
       let n = treeNode.level
       do {
-        cent.push(<div class="middle"></div>)
+        cent.push(<div class={fathers.includes((n-2).toString())?'w20':'w20 shu'}></div>)
+      // cent.push(<div class="w20">{`${fathers}${(n-2).toString()}`}</div>)
         n--
-      } while (n>=2);
+      } while (n>=3);
     }
     let zhanwei = null
     if (treeNode.level>=1) {
@@ -168,17 +169,21 @@ export function treeCellPrefix(h, { row, treeNode, store }) {
         {
           treeNode.level >=2 && !fatherIsLast ?<div class='shu'></div> : null
         }
+                {
+          cent
+        }
       </div>
     </div>)
   } else {
     let cent = null
-    if (treeNode.level>=2) {
+    if (treeNode.level>=3) {
       cent = []
       let n = treeNode.level
       do {
-        cent.push(<div class="middle"></div>)
+        cent.push(<div class={fathers.includes((n-2).toString())?'w20':'w20 shu'}></div>)
+      // cent.push(<div class="w20">{`${fathers}${(n-2).toString()}`}</div>)
         n--
-      } while (n>=2);
+      } while (n>=3);
     }
     let zhanwei = null
     if (treeNode.level>=1) {
@@ -199,7 +204,10 @@ export function treeCellPrefix(h, { row, treeNode, store }) {
           treeNode.level >=1 ?<div class={isLast?'l':'tu'}></div> : null
         }
         {
-          treeNode.level >=2 && !fatherIsLast ?<div class='shu'></div> : null
+          treeNode.level >=2 ?<div class={!fatherIsLast?'shu w20':'w20'}></div> : null
+        }
+        {
+          cent
         }
       </div>
     </div>);

@@ -39,7 +39,7 @@
       border
       max-height="700"
       :column-data="tablehead2"
-      style="width: 700px">
+      style="width: 1200px">
       <tableColumn v-for="item in tablehead2" :key="item.label" v-bind="item" >
         <template slot-scope="scope">
           <!-- <div @click="console(scope,item)">{{item.label}}</div> -->
@@ -65,7 +65,7 @@
 <script>
 import tableColumn from './tableColumn'
 import Ctable from '../common/table/src/table'
-
+import {deepD,da} from './data'
 
 export default {
   name: 'HelloWorld',
@@ -130,125 +130,8 @@ export default {
           {label:"地址",prop:'address',width:300,align:'center',},
           {label:"邮编",fixed:'right',prop:'zip',align:'center',}
       ],
-      tableData: [{
-        date: '2016-05-03',
-        name: '1',
-        id: 1,
-        province: '上海',
-        city: '普陀区',
-        address: '上海市普陀区金沙江路 1518 弄',
-        children: [{
-          date: '2013-05-02',
-          name: '2',
-          id: 2,
-          province: '上海',
-          city: '普陀区',
-          address: '上海市普陀区金沙江路 1518 弄',
-          zip: 200333
-        }, {
-          date: '2013-05-02',
-          name: '3',
-          id: 3,
-          province: '上海',
-          city: '普陀区',
-          children: [{
-            date: '2013-05-02',
-            name: '4',
-            id: 4,
-            province: '上海',
-            city: '普陀区',
-            address: '上海市普陀区金沙江路 1518 弄',
-            zip: 200333
-          }, {
-            date: '2013-05-02',
-            name: '5',
-            id: 5,
-            province: '上海',
-            city: '普陀区',
-            children: [{
-              date: '2013-05-02',
-              name: '6',
-              id: 6,
-              children: [{
-                date: '2013-05-02',
-                name: '7',
-                id: 7,
-                province: '上海',
-                city: '普陀区',
-                address: '上海市普陀区金沙江路 1518 弄',
-                zip: 200333
-              }],
-              province: '上海',
-              city: '普陀区',
-              address: '上海市普陀区金沙江路 1518 弄',
-              zip: 200333
-            }, {
-              date: '2013-05-02',
-              name: '8',
-              id: 8,
-              children: [{
-                date: '2013-05-02',
-                name: '9',
-                id: 9,
-                province: '上海',
-                city: '普陀区',
-                address: '上海市普陀区金沙江路 1518 弄',
-                zip: 200333
-              }],
-              province: '上海',
-              city: '普陀区',
-              address: '上海市普陀区金沙江路 1518 弄',
-              zip: 200333
-            }],
-            address: '上海市普陀区金沙江路 1518 弄',
-            zip: 200333
-          }, {
-            date: '2013-05-02',
-            name: '10',
-            id: 10,
-            province: '上海',
-            city: '普陀区',
-            children: [{
-              date: '2013-05-02',
-              name: '11',
-              id: 11,
-              province: '上海',
-              city: '普陀区',
-              address: '上海市普陀区金沙江路 1518 弄',
-              zip: 200333
-            }],
-            address: '上海市普陀区金沙江路 1518 弄',
-            zip: 200333
-          }],
-          address: '上海市普陀区金沙江路 1518 弄',
-          zip: 200333
-        }],
-        zip: 200333
-      }, {
-        date: '2016-05-02',
-        name: '12',
-        id: 12,
-        province: '上海',
-        city: '普陀区',
-        address: '上海市普陀区金沙江路 1518 弄',
-        zip: 200333
-      }, {
-        date: '2016-05-04',
-        name: '13',
-        id: 13,
-        province: '上海',
-        city: '普陀区',
-        address: '上海市普陀区金沙江路 1518 弄',
-        zip: 200333
-      }, {
-        date: '2016-05-07',
-        id: 14,
-        name: '14',
-        province: '上海',
-        city: '普陀区',
-        address: '上海市普陀区金沙江路 1518 弄',
-        zip: 200333
-      }]
+      // tableData:deepD
+      tableData:da
     }
   },
 }
