@@ -314,21 +314,25 @@ export default {
       let childrenKey = this.store.states.childrenColumnName
       if (row.hasOwnProperty(childrenKey) && row[childrenKey].length) {
         // row[childrenKey][row[childrenKey].length - 1]['isClast'] = true
-        this.setDeepLastIndexChildRow(row[childrenKey],childrenKey,false)
+        this.setDeepLastIndexChildRow(row[childrenKey],childrenKey,false,0,'')
         // let r = row[childrenKey][row[childrenKey].length - 1]
         // if (r.hasOwnProperty(childrenKey) && r[childrenKey].length) {
         //   this.setDeepLastIndexChildRow(r[childrenKey],childrenKey)
         // }
       }
     },
-    setDeepLastIndexChildRow(list,k,fatherIsLast) {
+    setDeepLastIndexChildRow(list,k,fatherIsLast,level,fL) {
+      let fll=fL
       list[list.length - 1]['isClast'] = true
       list.forEach((row,index) => {
         if (fatherIsLast) {
+          console.log(row['name'],'mmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmm')
           row['fatherIsLast'] = true
+          fll = fL ? fL + ',' + level.toString():level.toString()
         }
+        row['fatherTreeIsLast'] = fll
         if (row.hasOwnProperty(k) && row[k].length) {
-          this.setDeepLastIndexChildRow(row[k], k, index == list.length -1)
+          this.setDeepLastIndexChildRow(row[k], k, index == list.length -1,level+1,fll)
         }
       })
     },

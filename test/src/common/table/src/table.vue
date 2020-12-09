@@ -712,9 +712,7 @@
       }
     },
     updated () {
-      this.$props.data.forEach((item)=>console.log(item.name+'update'))
-
-      console.log(this.store,'ddddddd')
+      console.log(this.store,'ddddddd',this.$props.data)
     },
     created() {
       this.tableId = 'el-table_' + tableIdSeed++;
