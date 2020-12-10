@@ -38,6 +38,7 @@
       <table-body
         :context="context"
         :store="store"
+        :listTree="listTree"
         :stripe="stripe"
         :row-class-name="rowClassName"
         :row-style="rowStyle"
@@ -49,6 +50,7 @@
       <div v-if="rowFixData && rowFixData.length" class="ctable-bodyWrapper-cover" :style="{top: cTop + 'px'}">
         <table-body
           :store="store"
+          :listTree="listTree"
           :rowFixed="false"
           :stripe="stripe"
           :row-class-name="rowClassName"
@@ -124,6 +126,7 @@
         <table-body
           fixed="left"
           :store="store"
+          :listTree="listTree"
           :stripe="stripe"
           :highlight="highlightCurrentRow"
           :row-class-name="rowClassName"
@@ -135,6 +138,7 @@
         <div v-if="rowFixData && rowFixData.length" class="ctable-bodyWrapper-cover" :style="{top: cTop + 'px'}">
           <table-body
             :store="store"
+            :listTree="listTree"
             :rowFixed="false"
             fixed="left"
             :stripe="stripe"
@@ -199,6 +203,7 @@
         <table-body
           fixed="right"
           :store="store"
+          :listTree="listTree"
           :stripe="stripe"
           :row-class-name="rowClassName"
           :row-style="rowStyle"
@@ -210,6 +215,7 @@
         <div v-if="rowFixData && rowFixData.length" class="ctable-bodyWrapper-cover" :style="{top: cTop + 'px'}">
           <table-body
             :store="store"
+            :listTree="listTree"
             :rowFixed="false"
             fixed="right"
             :stripe="stripe"
@@ -261,14 +267,13 @@ import { addResizeListener, removeResizeListener } from 'element-ui/src/utils/re
 import Mousewheel from 'element-ui/src/directives/mousewheel';
 import Locale from 'element-ui/src/mixins/locale';
 import Migrating from 'element-ui/src/mixins/migrating';
-import { createStore, mapStates } from './store/helper';
+import { createStore, mapStates, createlistTree} from './store/helper';
 import TableLayout from './table-layout';
 import TableBody from './table-body';
 import TableHeader from './table-header';
 import TableFooter from './table-footer';
 import { parseHeight } from './util';
 import Sortable from 'sortablejs'
-import {listTree} from './store/defspre'
 
   let tableIdSeed = 1;
 
@@ -546,11 +551,12 @@ import {listTree} from './store/defspre'
             // handle: '.drag-btn',
             handle: '.el-table__row',
             onEnd: ({ newIndex, oldIndex, item}) => {
+              let listTree = this.listTree
+            console.log(listTree)
               let childrenKey = this.treeProps.children
               let nR = listTree.listTreeData[listTree.listIndexGetRowKey[newIndex]]
               let oR = listTree.listTreeData[listTree.listIndexGetRowKey[oldIndex]]
-
-                  console.log(this.rowKey,nR.fathers,nR)
+                  // console.log(this.rowKey,nR.fathers,nR)
               if (nR.parent != null) {
                 if (nR.fathers.includes(oR['row'][this.rowKey].toString())) {
                   let wrapperElem = item.parentNode
@@ -559,7 +565,6 @@ import {listTree} from './store/defspre'
                   // 错误的移动
                   let oldTrElem = wrapperElem.children[oldIndex]
                   wrapperElem.insertBefore(item, oldTrElem)
-
                   this.$message({
                     type: 'warning',
                     message: '不可插入自己子集'
@@ -569,10 +574,9 @@ import {listTree} from './store/defspre'
               }
 
               let currRow
-
               if (oR.parent == null) {
                 currRow = this.data.splice(oR.index, 1)[0]
-                console.log(currRow,oR,oldIndex,JSON.stringify(currRow),'~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~')
+                console.log(currRow,oR,nR,oldIndex,JSON.stringify(currRow),'~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~')
               } else {
                 let oRp = listTree.listTreeData[oR.parent]
                 currRow = oRp['row'][childrenKey].splice(oR.index, 1)[0]
@@ -581,29 +585,9 @@ import {listTree} from './store/defspre'
                 this.data.splice(nR.index, 0, currRow)
               } else {
                 let nRp = listTree.listTreeData[nR.parent]
-                // currRow = nRp['row'][childrenKey].splice(nR.index, 1)[0]
                 nRp['row'][childrenKey].splice(nR.index, 0,currRow)
               }
-
               // this.store.commit('setData', this.data)
-
-              // if (nR.parent == null) {
-              //   currRow = this.data.splice(nR.index, 1)[0]
-              //   this.data.splice(nR.index, 0, oR['row'])
-              // } else {
-              //   let nRp = listTree.listTreeData[nR.parent]
-              //   currRow = nRp['row'][childrenKey].splice(nR.index, 1)[0]
-              //   nRp['row'][childrenKey].splice(nR.index, 0,oR['row'])
-              // }
-              // if (oR.parent == null) {
-              //   currRow = this.data.splice(oR.index, 1)[0]
-              //   this.data.splice(oR.index, 0, nR['row'])
-              // } else {
-              //   let oRp = listTree.listTreeData[oR.parent]
-              //   currRow = oRp['row'][childrenKey].splice(oR.index, 1)[0]
-              //   oRp['row'][childrenKey].splice(oR.index, 0,nR['row'])
-              // }
-
             }
           })
         })
@@ -767,7 +751,8 @@ import {listTree} from './store/defspre'
       }
     },
     updated () {
-      console.log(this.store,'ddddddd',this.$props.data)
+      console.log('ddddddd',this.listTree,this.$props.data)
+
     },
     created() {
       this.tableId = 'el-table_' + tableIdSeed++;
@@ -822,7 +807,8 @@ import {listTree} from './store/defspre'
         lazyColumnIdentifier: hasChildren,
         childrenColumnName: children
       });
-      console.log(this.store,'sssssssssssssss')
+      this.listTree = createlistTree()
+      console.log(this.listTree,'sssssssssssssss')
       const layout = new TableLayout({
         store: this.store,
         table: this,

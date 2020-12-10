@@ -17,6 +17,14 @@ export function createStore(table, initialState = {}) {
   return store;
 }
 
+export function createlistTree () {
+  return {
+    listTreeData: {},
+    listIndexGetRowKey: {},
+    listLength:0
+  }
+}
+
 export function mapStates(mapper) {
   const res = {};
   Object.keys(mapper).forEach(key => {

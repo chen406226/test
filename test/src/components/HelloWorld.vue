@@ -59,13 +59,31 @@
         </template>
       </tableColumn>
     </Ctable>
+    <Ctable
+      :data="tableData1"
+      @dragChange="dragChange"
+      row-key="id"
+      :rowFixData="[]"
+      default-expand-all
+      :tree-props="{children: 'children', hasChildren: 'hasChildren'}"
+      border
+      max-height="700"
+      :column-data="tablehead2"
+      style="width: 1200px">
+      <tableColumn v-for="item in tablehead2" :key="item.label" v-bind="item" >
+        <template slot-scope="scope">
+          <span>{{scope.row[scope.column.property]}}</span>
+        </template>
+      </tableColumn>
+    </Ctable>
+    <span>{{mmmm}}</span>
   </div>
 </template>
 
 <script>
 import tableColumn from './tableColumn'
 import Ctable from '../common/table/src/table'
-import {deepD,da} from './data'
+import {deepD,da,da2} from './data'
 
 export default {
   name: 'HelloWorld',
@@ -74,6 +92,14 @@ export default {
   },
   components:{
     tableColumn,Ctable
+  },
+  updated (){
+    console.log('uuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuu')
+  },
+  mounted(){
+    // setInterval(() => {
+    //   this.mmmm +=1
+    // }, 1000);
   },
   methods:{
     console(scope){
@@ -95,6 +121,7 @@ export default {
   },
   data() {
     return {
+      mmmm:1,
       tablehead1:[
         {label:"姓名",
           prop:'name',
@@ -123,15 +150,15 @@ export default {
       }
       ],
       tablehead2:[
-          {label:"日期",prop:'date',align:'center',width:250},
+          {label:"日期",prop:'date',align:'center',fixed:true,width:250},
           {label:"姓名",prop:'name',align:'center',width:250},
           {label:"省份",prop:'province',align:'center',},
           {label:"市区",prop:'city',align:'center',},
           {label:"地址",prop:'address',width:300,align:'center',},
           {label:"邮编",fixed:'right',prop:'zip',align:'center',}
       ],
-      tableData:deepD
-      // tableData:da
+      tableData:da2,
+      tableData1:da
     }
   },
 }

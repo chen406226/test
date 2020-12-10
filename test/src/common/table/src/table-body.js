@@ -4,7 +4,6 @@ import { getStyle, hasClass, removeClass, addClass } from 'element-ui/src/utils/
 import debounce from 'throttle-debounce/debounce';
 import LayoutObserver from './layout-observer';
 import { mapStates } from './store/helper';
-import {listTree} from './store/defspre'
 
 
 export default {
@@ -15,6 +14,9 @@ export default {
   props: {
     store: {
       required: true
+    },
+    listTree: {
+      type: Object,
     },
     rowFixed: Boolean,
     stripe: Boolean,
@@ -315,6 +317,7 @@ export default {
 
     setLastIndexChildRow(row, $index, $idx) {
       // 有空优化  listLength 用$index 替换
+      let listTree = this.listTree
       let childrenKey = this.store.states.childrenColumnName
       let rowKey = this.store.states.rowKey
       if ($index == 0) {
@@ -330,6 +333,7 @@ export default {
       }
     },
     setDeepLastIndexChildRow(list,k,fatherIsLast,level,fL,p,fs) {
+      let listTree = this.listTree
       let rowKey = this.store.states.rowKey
       list.forEach((row,index) => {
         if (row['isClast']) row['isClast']=false
