@@ -130,8 +130,8 @@ export default {
           {label:"地址",prop:'address',width:300,align:'center',},
           {label:"邮编",fixed:'right',prop:'zip',align:'center',}
       ],
-      // tableData:deepD
-      tableData:da
+      tableData:deepD
+      // tableData:da
     }
   },
 }

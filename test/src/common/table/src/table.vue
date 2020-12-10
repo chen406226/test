@@ -545,27 +545,64 @@ import {listTree} from './store/defspre'
           this.sortable = Sortable.create(xTable.querySelector('.el-table__body-wrapper>.el-table__body tbody'), {
             // handle: '.drag-btn',
             handle: '.el-table__row',
-            onEnd: ({ newIndex, oldIndex }) => {
-              let childrenKey = this.store.states.childrenColumnName
+            onEnd: ({ newIndex, oldIndex, item}) => {
+              let childrenKey = this.treeProps.children
               let nR = listTree.listTreeData[listTree.listIndexGetRowKey[newIndex]]
               let oR = listTree.listTreeData[listTree.listIndexGetRowKey[oldIndex]]
-              let currRow
-              if (nR.parent == null) {
-                currRow = this.data.splice(nR.index, 1)[0]
-                this.data.splice(nR.index, 0, oR['row'])
-              } else {
-                let nRp = listTree.listTreeData[nR.parent]
-                currRow = nRp['row'][childrenKey].splice(nR.index, 1)[0]
-                nRp['row'][childrenKey].splice(nR.index, 0,oR['row'])
+
+                  console.log(this.rowKey,nR.fathers,nR)
+              if (nR.parent != null) {
+                if (nR.fathers.includes(oR['row'][this.rowKey].toString())) {
+                  let wrapperElem = item.parentNode
+                  let prevTrElem = item.previousElementSibling
+                  console.log(item,wrapperElem,prevTrElem)
+                  // 错误的移动
+                  let oldTrElem = wrapperElem.children[oldIndex]
+                  wrapperElem.insertBefore(item, oldTrElem)
+
+                  this.$message({
+                    type: 'warning',
+                    message: '不可插入自己子集'
+                  })
+                  return
+                }
               }
+
+              let currRow
+
               if (oR.parent == null) {
                 currRow = this.data.splice(oR.index, 1)[0]
-                this.data.splice(oR.index, 0, nR['row'])
+                console.log(currRow,oR,oldIndex,JSON.stringify(currRow),'~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~')
               } else {
                 let oRp = listTree.listTreeData[oR.parent]
                 currRow = oRp['row'][childrenKey].splice(oR.index, 1)[0]
-                oRp['row'][childrenKey].splice(oR.index, 0,nR['row'])
               }
+              if (nR.parent == null) {
+                this.data.splice(nR.index, 0, currRow)
+              } else {
+                let nRp = listTree.listTreeData[nR.parent]
+                // currRow = nRp['row'][childrenKey].splice(nR.index, 1)[0]
+                nRp['row'][childrenKey].splice(nR.index, 0,currRow)
+              }
+
+              // this.store.commit('setData', this.data)
+
+              // if (nR.parent == null) {
+              //   currRow = this.data.splice(nR.index, 1)[0]
+              //   this.data.splice(nR.index, 0, oR['row'])
+              // } else {
+              //   let nRp = listTree.listTreeData[nR.parent]
+              //   currRow = nRp['row'][childrenKey].splice(nR.index, 1)[0]
+              //   nRp['row'][childrenKey].splice(nR.index, 0,oR['row'])
+              // }
+              // if (oR.parent == null) {
+              //   currRow = this.data.splice(oR.index, 1)[0]
+              //   this.data.splice(oR.index, 0, nR['row'])
+              // } else {
+              //   let oRp = listTree.listTreeData[oR.parent]
+              //   currRow = oRp['row'][childrenKey].splice(oR.index, 1)[0]
+              //   oRp['row'][childrenKey].splice(oR.index, 0,nR['row'])
+              // }
 
             }
           })
@@ -708,7 +745,6 @@ import {listTree} from './store/defspre'
         immediate: true,
         handler(value) {
           if (!this.rowKey) return;
-          console.log('rowkey')
           this.store.setCurrentRowKey(value);
         }
       },
@@ -716,7 +752,6 @@ import {listTree} from './store/defspre'
       data: {
         immediate: true,
         handler(value) {
-          console.log('wathcdata',window.ssD==value)
           this.store.commit('setData', value);
           this.store.commit('setFixData', value.slice(-2));
         }

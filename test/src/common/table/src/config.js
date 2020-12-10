@@ -138,7 +138,7 @@ export function treeCellPrefix(h, { row, treeNode, store }) {
       let n = treeNode.level
       do {
         cent.push(<div class={fathers.includes((n-2).toString())?'w20':'w20 shu'}></div>)
-      // cent.push(<div class="w20">{`${fathers}${(n-2).toString()}`}</div>)
+        // cent.push(<div class="w20">{`${fathers}${(n-2).toString()}`}</div>)
         n--
       } while (n>=3);
     }
@@ -164,12 +164,12 @@ export function treeCellPrefix(h, { row, treeNode, store }) {
       <div class='c-icon-arrow-bg'>
         <div class="veril"></div>
         {
-          treeNode.level >=1 ?<div class={isLast?'l':'tu'}></div> : null
+          treeNode.level >=1 ? <div class={isLast?'l':'tu'}></div> : null
         }
         {
-          treeNode.level >=2 && !fatherIsLast ?<div class='shu'></div> : null
+          treeNode.level >=2 ? <div class={fatherIsLast ? 'w20' : 'shu w20'}></div> : null
         }
-                {
+        {
           cent
         }
       </div>
@@ -204,7 +204,7 @@ export function treeCellPrefix(h, { row, treeNode, store }) {
           treeNode.level >=1 ?<div class={isLast?'l':'tu'}></div> : null
         }
         {
-          treeNode.level >=2 ?<div class={!fatherIsLast?'shu w20':'w20'}></div> : null
+          treeNode.level >=2 ?<div class={fatherIsLast?'w20':'shu w20'}></div> : null
         }
         {
           cent
