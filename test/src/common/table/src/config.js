@@ -96,16 +96,14 @@ export function defaultRenderCell(h, { row, column, $index }) {
   return value;
 }
 
-export function treeCellPrefix(h, { row, treeNode, store }) {
+export function treeCellPrefix(h, { row, treeNode, store, isClast, fatherIsLast ,fatherTreeIsLast}) {
   if (!treeNode) return null;
   const ele = [];
   const callback = function(e) {
     e.stopPropagation();
     store.loadOrToggle(row);
   };
-  let isLast = row.isClast || false
-  let fatherIsLast = row.fatherIsLast || false
-  let fathers = row.fatherTreeIsLast
+  console.log(row.id,'ffffffffffffffffffffffffffffffffffffffffff',isClast,fatherIsLast,row,fatherTreeIsLast)
   let iconCoverClasses = ['c-icon-arrow-cover'];
   if (treeNode.indent) {
     iconCoverClasses.push('c-icon-arrow-cover-f')
@@ -137,8 +135,7 @@ export function treeCellPrefix(h, { row, treeNode, store }) {
       cent = []
       let n = treeNode.level
       do {
-        cent.push(<div class={fathers.includes((n-2).toString())?'w20':'w20 shu'}></div>)
-        // cent.push(<div class="w20">{`${fathers}${(n-2).toString()}`}</div>)
+        cent.push(<div class={fatherTreeIsLast.includes((n-2).toString())?'w20':'w20 shu'}></div>)
         n--
       } while (n>=3);
     }
@@ -151,10 +148,6 @@ export function treeCellPrefix(h, { row, treeNode, store }) {
         n--
       } while (n>=1);
     }
-    let firstC = []
-    if (isLast) {
-      firstC = 'isLast'
-    }
     ele.push(<div class={iconCoverClasses}>
       {zhanwei}
       <div class={ expandClasses }
@@ -164,7 +157,7 @@ export function treeCellPrefix(h, { row, treeNode, store }) {
       <div class='c-icon-arrow-bg'>
         <div class="veril"></div>
         {
-          treeNode.level >=1 ? <div class={isLast?'l':'tu'}></div> : null
+          treeNode.level >=1 ? <div class={isClast?'l':'tu'}></div> : null
         }
         {
           treeNode.level >=2 ? <div class={fatherIsLast ? 'w20' : 'shu w20'}></div> : null
@@ -180,8 +173,7 @@ export function treeCellPrefix(h, { row, treeNode, store }) {
       cent = []
       let n = treeNode.level
       do {
-        cent.push(<div class={fathers.includes((n-2).toString())?'w20':'w20 shu'}></div>)
-      // cent.push(<div class="w20">{`${fathers}${(n-2).toString()}`}</div>)
+        cent.push(<div class={fatherTreeIsLast.includes((n-2).toString())?'w20':'w20 shu'}></div>)
         n--
       } while (n>=3);
     }
@@ -201,7 +193,7 @@ export function treeCellPrefix(h, { row, treeNode, store }) {
       <div class='c-icon-arrow-bg no-expanded'>
         <div class='c-icon-child-end-node'></div>
         {
-          treeNode.level >=1 ?<div class={isLast?'l':'tu'}></div> : null
+          treeNode.level >=1 ?<div class={isClast?'l':'tu'}></div> : null
         }
         {
           treeNode.level >=2 ?<div class={fatherIsLast?'w20':'shu w20'}></div> : null

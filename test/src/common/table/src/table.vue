@@ -39,6 +39,7 @@
         :context="context"
         :store="store"
         :listTree="listTree"
+        :key="rowDrogKey"
         :stripe="stripe"
         :row-class-name="rowClassName"
         :row-style="rowStyle"
@@ -50,6 +51,7 @@
       <div v-if="rowFixData && rowFixData.length" class="ctable-bodyWrapper-cover" :style="{top: cTop + 'px'}">
         <table-body
           :store="store"
+          :key="rowDrogKey"
           :listTree="listTree"
           :rowFixed="false"
           :stripe="stripe"
@@ -126,6 +128,7 @@
         <table-body
           fixed="left"
           :store="store"
+          :key="rowDrogKey"
           :listTree="listTree"
           :stripe="stripe"
           :highlight="highlightCurrentRow"
@@ -139,6 +142,7 @@
           <table-body
             :store="store"
             :listTree="listTree"
+            :key="rowDrogKey"
             :rowFixed="false"
             fixed="left"
             :stripe="stripe"
@@ -203,6 +207,7 @@
         <table-body
           fixed="right"
           :store="store"
+          :key="rowDrogKey"
           :listTree="listTree"
           :stripe="stripe"
           :row-class-name="rowClassName"
@@ -215,6 +220,7 @@
         <div v-if="rowFixData && rowFixData.length" class="ctable-bodyWrapper-cover" :style="{top: cTop + 'px'}">
           <table-body
             :store="store"
+            :key="rowDrogKey"
             :listTree="listTree"
             :rowFixed="false"
             fixed="right"
@@ -302,7 +308,7 @@ import Sortable from 'sortablejs'
 
       maxHeight: [String, Number],
 
-      columnData: {
+      coluData: {
         type: Array,
         default: function() {
           return []
@@ -392,6 +398,15 @@ import Sortable from 'sortablejs'
       },
 
       lazy: Boolean,
+      rowDropCopy: {
+        type: Object,
+        default() {
+          return {type: 'confirm', disabled: true}
+        }
+      },
+      rowDrag: Boolean,
+      columnDrag: Boolean,
+
 
       load: Function
     },
@@ -550,18 +565,21 @@ import Sortable from 'sortablejs'
           this.sortable = Sortable.create(xTable.querySelector('.el-table__body-wrapper>.el-table__body tbody'), {
             // handle: '.drag-btn',
             handle: '.el-table__row',
-            onEnd: ({ newIndex, oldIndex, item}) => {
+            onEnd: ($sev) => {
+              if (this.$listeners.hasOwnProperty('overrideRowDropOnEnd')) {
+                this.$emit('overrideRowDropOnEnd',$sev)
+                return
+              }
+              const { newIndex, oldIndex, item} = $sev
+              console.log($sev,this.$listeners, '$ssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss')
               let listTree = this.listTree
-            console.log(listTree)
               let childrenKey = this.treeProps.children
               let nR = listTree.listTreeData[listTree.listIndexGetRowKey[newIndex]]
               let oR = listTree.listTreeData[listTree.listIndexGetRowKey[oldIndex]]
-                  // console.log(this.rowKey,nR.fathers,nR)
               if (nR.parent != null) {
                 if (nR.fathers.includes(oR['row'][this.rowKey].toString())) {
                   let wrapperElem = item.parentNode
                   let prevTrElem = item.previousElementSibling
-                  console.log(item,wrapperElem,prevTrElem)
                   // 错误的移动
                   let oldTrElem = wrapperElem.children[oldIndex]
                   wrapperElem.insertBefore(item, oldTrElem)
@@ -574,19 +592,109 @@ import Sortable from 'sortablejs'
               }
 
               let currRow
+              let needCopy = false
+              const {type = '', disabled = false} = this.rowDropCopy
+              if (type == 'auto') {
+                needCopy = true
+              }
+              if (!disabled && type != 'auto') {
+                this.$confirm('已拖动, 是否需要复制?', '操作提示', {
+                  confirmButtonText: '确定',
+                  cancelButtonText: '取消',
+                  type: 'info'
+                }).then(() => {
+                  if (oR.parent == null) {
+                    currRow = this.data[oR.index]
+                  } else {
+                    let oRp = listTree.listTreeData[oR.parent]
+                    currRow = oRp['row'][childrenKey][oR.index]
+                  }
+                  currRow = Object.assign({},currRow,{
+                    [this.rowKey]: new Date().getTime(),
+                    isDropCopyed: true
+                  })
+                  if (nR.parent == null) {
+                    this.data.splice(nR.index, 0, currRow)
+                  } else {
+                    let i = nR.index
+                    if (newIndex>oldIndex && nR.parent!=oR.parent) {
+                      i=i+1
+                    }
+                    let nRp = listTree.listTreeData[nR.parent]
+                    nRp['row'][childrenKey].splice(i, 0,currRow)
+                  }
+                  this.rowDrogKey += 1
+                  this.$nextTick(()=>{
+                    this.updateDragDrop()
+                  })
+                  this.$message({
+                    type: 'success',
+                    message: '复制成功!'
+                  });
+                }).catch(() => {
+                  if (oR.parent == null) {
+                    currRow = this.data.splice(oR.index, 1)[0]
+                  } else {
+                    let oRp = listTree.listTreeData[oR.parent]
+                    currRow = oRp['row'][childrenKey].splice(oR.index, 1)[0]
+                  }
+                  if (nR.parent == null) {
+                    this.data.splice(nR.index, 0, currRow)
+                  } else {
+                    let i = nR.index
+                    if (newIndex>oldIndex && nR.parent!=oR.parent) {
+                      i=i+1
+                    }
+                    let nRp = listTree.listTreeData[nR.parent]
+                    nRp['row'][childrenKey].splice(i, 0,currRow)
+                  }
+                  this.rowDrogKey += 1
+                  this.$nextTick(()=>{
+                    this.updateDragDrop()
+                  })
+                  // this.$message({
+                  //   type: 'info',
+                  //   message: '已取消复制'
+                  // });          
+                });
+                return 
+              }
               if (oR.parent == null) {
-                currRow = this.data.splice(oR.index, 1)[0]
-                console.log(currRow,oR,nR,oldIndex,JSON.stringify(currRow),'~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~')
+                if (needCopy) {
+                  currRow = this.data[oR.index]
+                  currRow = Object.assign({},currRow,{
+                    [this.rowKey]: new Date().getTime(),
+                    isDropCopyed: true
+                  })
+                  } else {
+                  currRow = this.data.splice(oR.index, 1)[0]
+                }
               } else {
                 let oRp = listTree.listTreeData[oR.parent]
-                currRow = oRp['row'][childrenKey].splice(oR.index, 1)[0]
+                if (needCopy) {
+                  currRow = oRp['row'][childrenKey][oR.index]
+                  currRow = Object.assign({},currRow,{
+                    [this.rowKey]: new Date().getTime(),
+                    isDropCopyed: true
+                  })
+                } else {
+                  currRow = oRp['row'][childrenKey].splice(oR.index, 1)[0]
+                }
               }
               if (nR.parent == null) {
                 this.data.splice(nR.index, 0, currRow)
               } else {
+                let i = nR.index
+                if (newIndex>oldIndex && nR.parent!=oR.parent) {
+                  i=i+1
+                }
                 let nRp = listTree.listTreeData[nR.parent]
-                nRp['row'][childrenKey].splice(nR.index, 0,currRow)
+                nRp['row'][childrenKey].splice(i, 0,currRow)
               }
+              this.rowDrogKey += 1
+              this.$nextTick(()=>{
+                this.updateDragDrop()
+              })
               // this.store.commit('setData', this.data)
             }
           })
@@ -597,14 +705,40 @@ import Sortable from 'sortablejs'
           let xTable = this.$refs.headerWrapper
           this.sortable = Sortable.create(xTable.querySelector('.el-table__header thead tr:first-child'), {
             handle: 'th:not(.no-drop)',
-            onEnd: ({ item, newIndex, oldIndex }) => {
+            onEnd: ($sev) => {
+              const { item, newIndex, oldIndex } = $sev
+              if (this.$listeners.hasOwnProperty('overrideRowDropOnEnd')) {
+                this.$emit('overrideColumnDropOnEnd',$sev,this.store.updateColumns)
+                this.$nextTick(()=>{
+                  this.store.updateColumns()
+                  this.updateDragDrop()
+                })
+                return
+              }
+
               let c = this.store.states._columns
+              let newProp = c[newIndex]['property']
+              let oldProp = c[oldIndex]['property']
+              console.log(this.store.states._columns)
               let currRow = c.splice(oldIndex, 1)[0]
               c.splice(newIndex, 0, currRow)
-              this.store.updateColumns();
+              this.$emit('columnDropOnEnd',$sev,{newProp,oldProp})
+              this.store.updateColumns()
             }
           })
         })
+      },
+
+      updateDragDrop() {
+        if (this.sortable) {
+          this.sortable.destroy()
+        }
+        if (this.rowDrag) {
+          this.rowDrop()
+        }
+        if (this.columnDrag) {
+          this.columnDrop()
+        }
       }
     },
 
@@ -751,7 +885,7 @@ import Sortable from 'sortablejs'
       }
     },
     updated () {
-      console.log('ddddddd',this.listTree,this.$props.data)
+      console.log('ddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd',this.listTree,this.$props.data)
 
     },
     created() {
@@ -760,9 +894,8 @@ import Sortable from 'sortablejs'
     },
 
     mounted() {
+      console.log(this.rowDropCopy,this.border,'11111111111111111111')
       this.bindEvents();
-      console.log(this.store.states.columns,'55555555555')
-
       this.store.updateColumns();
       this.doLayout();
 
@@ -784,8 +917,7 @@ import Sortable from 'sortablejs'
       });
 
       this.$ready = true;
-      this.rowDrop()
-      this.columnDrop()
+      this.updateDragDrop()
     },
 
     destroyed() {
@@ -808,7 +940,6 @@ import Sortable from 'sortablejs'
         childrenColumnName: children
       });
       this.listTree = createlistTree()
-      console.log(this.listTree,'sssssssssssssss')
       const layout = new TableLayout({
         store: this.store,
         table: this,
@@ -818,6 +949,7 @@ import Sortable from 'sortablejs'
       return {
         layout,
         cTop: 0,
+        rowDrogKey: 1,
         isHidden: false,
         renderExpanded: null,
         resizeProxyVisible: false,

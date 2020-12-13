@@ -325,35 +325,33 @@ export default {
       }
 
       listTree.listIndexGetRowKey[listTree.listLength] = row[rowKey]
-      listTree.listTreeData[row[rowKey]] = {parent: null, index: $idx,row,listLength:$index,fathers: ''}
+      listTree.listTreeData[row[rowKey]] = {parent: null, index: $idx,row,listLength:$index,fathers: '',isClast:false,fatherIsLast:false,fatherTreeIsLast:''}
       listTree.listLength += 1
       if (row.hasOwnProperty(childrenKey) && row[childrenKey].length) {
         this.setDeepLastIndexChildRow(row[childrenKey],childrenKey,false,0,'',row[rowKey],row[rowKey].toString())
-        // console.log(row[rowKey].toString(),listTree,'uuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuu')
       }
     },
-    setDeepLastIndexChildRow(list,k,fatherIsLast,level,fL,p,fs) {
+    setDeepLastIndexChildRow(list,k,fathIsLast,level,fL,p,fs) {
       let listTree = this.listTree
       let rowKey = this.store.states.rowKey
       list.forEach((row,index) => {
-        if (row['isClast']) row['isClast']=false
+        let isClast = false
         if (list.length -1 == index) {
-          row['isClast'] = true
+          isClast = true
         }
-        let fll=fL
+        let fatherTreeIsLast=fL
         let fss = fs
-        if (row['fatherIsLast']) row['fatherIsLast'] = false
-        if (fatherIsLast) {
-          row['fatherIsLast'] = true
-          fll = fL ? fL + ',' + level.toString():level.toString()
+        let fatherIsLast = false
+        if (fathIsLast) {
+          fatherIsLast = true
+          fatherTreeIsLast = fL ? fL + ',' + level.toString():level.toString()
         }
-        row['fatherTreeIsLast'] = fll
         listTree.listIndexGetRowKey[listTree.listLength] = row[rowKey]
-        listTree.listTreeData[row[rowKey]] = {parent: p, index,row,listLength:listTree.listLength,fathers: fss}
+        listTree.listTreeData[row[rowKey]] = {parent: p, index,row,listLength:listTree.listLength,fathers: fss,isClast,fatherIsLast,fatherTreeIsLast}
         listTree.listLength += 1
         fss += ',' + row[rowKey]
         if (row.hasOwnProperty(k) && row[k].length) {
-          this.setDeepLastIndexChildRow(row[k], k, index == list.length -1,level+1,fll,row[rowKey],fss)
+          this.setDeepLastIndexChildRow(row[k], k, index == list.length -1,level+1,fatherTreeIsLast,row[rowKey],fss)
         }
       })
     },
@@ -370,6 +368,10 @@ export default {
       const { treeIndent, columns, firstDefaultColumnIndex } = this;
       const columnsHidden = columns.map((column, index) => this.isColumnHidden(index));
       const rowClasses = this.getRowClass(row, $index);
+      let rowKey = this.store.states.rowKey
+
+      const {isClast = false, fatherIsLast = false, fatherTreeIsLast = ''} = this.listTree['listTreeData'][row[rowKey]]
+      console.log(this.listTree['listTreeData'][row[rowKey]],rowKey,'cccccccccccccccccccccccccccccccccccccccccccccccccccccc')
       let display = true;
       if (treeRowData) {
         rowClasses.push('el-table__row--level-' + treeRowData.level);
@@ -401,6 +403,9 @@ export default {
               store: this.store,
               _self: this.context || this.table.$vnode.context,
               column: columnData,
+              isClast,
+              fatherIsLast,
+              fatherTreeIsLast,
               row,
               $index
             };
