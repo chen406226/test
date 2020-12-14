@@ -1,7 +1,7 @@
 <template>
   <li
     @mouseenter="hoverItem"
-    @click.stop="$listeners.click"
+    @click.stop="doClick"
     class="el-select-dropdown__item c-menu-list-item"
     v-show="visible"
     >
@@ -19,11 +19,12 @@
         type: Boolean,
         default: true
       },
-      indss: {
-        type: [Number,String]
+      autoClose: {
+        type: Boolean,
+        default: true
       },
-
     },
+    inject: ['cMenuToggleMenu'],
     data() {
       return {
         index: -1,
@@ -38,12 +39,22 @@
     },
 
     methods: {
-      hoverItem(){
+      hoverItem() {
         this.hover = true
-      }
+      },
+      doClick(e) {
+        if (this.autoClose) {
+          this.cMenuToggleMenu()
+          this.$listeners.click(e,()=>{})
+          return
+        }
+        this.$listeners.click(e,this.cMenuToggleMenu)
+      },
     },
 
     created() {
+    },
+    mounted() {
     },
 
     beforeDestroy() {

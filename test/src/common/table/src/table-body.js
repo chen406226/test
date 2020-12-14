@@ -18,7 +18,7 @@ export default {
     listTree: {
       type: Object,
     },
-    rowFixed: Boolean,
+    rowFixed: {type: Boolean, default: false},
     stripe: Boolean,
     context: {},
     rowClassName: [String, Function],
@@ -43,9 +43,9 @@ export default {
         </colgroup>
         <tbody>
           {
-            data.reduce((acc, row, $idx) => {
+            !this.rowFixed ? data.reduce((acc, row, $idx) => {
               return acc.concat(this.wrappedRowRender(row, acc.length, $idx));
-            }, [])
+            }, []) : data.map((row,$idx)=>this.wrappedRowRender(row,$idx,$idx))
           }
           <el-tooltip effect={ this.table.tooltipEffect } placement="top" ref="tooltip" content={ this.tooltipContent }></el-tooltip>
         </tbody>
@@ -369,8 +369,13 @@ export default {
       const columnsHidden = columns.map((column, index) => this.isColumnHidden(index));
       const rowClasses = this.getRowClass(row, $index);
       let rowKey = this.store.states.rowKey
+      let rowTreeD = this.listTree['listTreeData'][row[rowKey]] || {}
+      console.log(rowTreeD,'*********************************************************************')
+      if (this.rowFixed) {
+        rowTreeD = {}
+      }
 
-      const {isClast = false, fatherIsLast = false, fatherTreeIsLast = ''} = this.listTree['listTreeData'][row[rowKey]]
+      const {isClast = false, fatherIsLast = false, fatherTreeIsLast = ''} = rowTreeD
       console.log(this.listTree['listTreeData'][row[rowKey]],rowKey,'cccccccccccccccccccccccccccccccccccccccccccccccccccccc')
       let display = true;
       if (treeRowData) {
@@ -406,6 +411,7 @@ export default {
               isClast,
               fatherIsLast,
               fatherTreeIsLast,
+              rowFixed:this.rowFixed,
               row,
               $index
             };
@@ -454,7 +460,10 @@ export default {
       const store = this.store;
       const { isRowExpanded, assertRowKey } = store;
       const { treeData, lazyTreeNodeMap, childrenColumnName, rowKey } = store.states;
-      this.setLastIndexChildRow(row, $index, $idx)
+      if (!this.rowFixed) {
+        this.setLastIndexChildRow(row, $index, $idx)
+      }
+
       if (this.hasExpandColumn && isRowExpanded(row)) {
         const renderExpanded = this.table.renderExpanded;
         const tr = this.rowRender(row, $index);

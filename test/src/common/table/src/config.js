@@ -96,7 +96,7 @@ export function defaultRenderCell(h, { row, column, $index }) {
   return value;
 }
 
-export function treeCellPrefix(h, { row, treeNode, store, isClast, fatherIsLast ,fatherTreeIsLast}) {
+export function treeCellPrefix(h, { row, treeNode, store, isClast,rowFixed, fatherIsLast ,fatherTreeIsLast}) {
   if (!treeNode) return null;
   const ele = [];
   const callback = function(e) {
@@ -108,6 +108,7 @@ export function treeCellPrefix(h, { row, treeNode, store, isClast, fatherIsLast 
   if (treeNode.indent) {
     iconCoverClasses.push('c-icon-arrow-cover-f')
   }
+
   // 站位
   ele.push(<span class="c-icon-arrow-cover-zhanwei" style={{'padding-left': '20px'}}></span>);
   if (treeNode.indent) {
@@ -125,11 +126,15 @@ export function treeCellPrefix(h, { row, treeNode, store, isClast, fatherIsLast 
     if (treeNode.loading) {
       iconClasses = ['el-icon-loading'];
     }
-    // let iconClasses = ['el-icon-arrow-right'];
-    // ele.push(<div class={ expandClasses }
-    //   on-click={ callback }>
-    //   <i class={ iconClasses }></i>
-    // </div>);
+    // 固定行只显示
+    if (rowFixed) {
+      let iconClasses = ['el-icon-arrow-right'];
+      ele.push(<div class={ expandClasses }
+        on-click={ callback }>
+        <i class={ iconClasses }></i>
+      </div>);
+      return ele
+    }
     let cent = null
     if (treeNode.level>=3) {
       cent = []
@@ -168,6 +173,10 @@ export function treeCellPrefix(h, { row, treeNode, store, isClast, fatherIsLast 
       </div>
     </div>)
   } else {
+    if (rowFixed) {
+      ele.push(<span class="el-table__placeholder"></span>);
+      return ele
+    }
     let cent = null
     if (treeNode.level>=3) {
       cent = []
@@ -187,6 +196,7 @@ export function treeCellPrefix(h, { row, treeNode, store, isClast, fatherIsLast 
       } while (n>=1);
     }
     // ele.push(<span class="el-table__placeholder"></span>);
+
     ele.push(<div class='c-icon-arrow-cover c-icon-arrow-cover-level'>
       {zhanwei}
       <span class="el-table__placeholder"></span>

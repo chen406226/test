@@ -405,6 +405,7 @@ export default {
           document.ondragstart = null;
 
           setTimeout(function() {
+            table.updateDragDrop()
             removeClass(columnEl, 'noclick');
           }, 0);
         };

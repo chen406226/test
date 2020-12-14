@@ -48,20 +48,23 @@
            width: bodyWidth
         }">
       </table-body>
-      <div v-if="rowFixData && rowFixData.length" class="ctable-bodyWrapper-cover" :style="{top: cTop + 'px'}">
-        <table-body
-          :store="store"
-          :key="rowDrogKey"
-          :listTree="listTree"
-          :rowFixed="false"
-          :stripe="stripe"
-          :row-class-name="rowClassName"
-          :row-style="rowStyle"
-          :highlight="highlightCurrentRow"
-          :style="{
-            width: bodyWidth
-          }">
-        </table-body>
+      <div v-if="rowFixData && rowFixData.length" class="ctable-bodyWrapper-cover scroll-body" :class="[rowFixFold?'fold':'']" :style="{top: cTop + 'px'}">
+        <div class="table-body-cover">
+          <table-body
+            :store="store"
+            :key="rowDrogKey"
+            :listTree="listTree"
+            :rowFixed="true"
+            :stripe="stripe"
+            :row-class-name="rowClassName"
+            :row-style="rowStyle"
+            :highlight="highlightCurrentRow"
+            :style="{
+              width: bodyWidth
+            }">
+          </table-body>
+        </div>
+        <span @click="rowFixFold=!rowFixFold" class="arrow-cover"><span class="arrow-body"><i class="el-icon-d-arrow-right"></i></span></span>
       </div>
       <div
         v-if="!data || data.length === 0"
@@ -138,12 +141,12 @@
             width: bodyWidth
           }">
         </table-body>
-        <div v-if="rowFixData && rowFixData.length" class="ctable-bodyWrapper-cover" :style="{top: cTop + 'px'}">
+        <div v-if="rowFixData && rowFixData.length" class="ctable-bodyWrapper-cover"  :class="[rowFixFold?'hidden-fold':'']" :style="{top: cTop + 'px'}">
           <table-body
             :store="store"
             :listTree="listTree"
             :key="rowDrogKey"
-            :rowFixed="false"
+            :rowFixed="true"
             fixed="left"
             :stripe="stripe"
             :row-class-name="rowClassName"
@@ -217,12 +220,12 @@
             width: bodyWidth
           }">
         </table-body>
-        <div v-if="rowFixData && rowFixData.length" class="ctable-bodyWrapper-cover" :style="{top: cTop + 'px'}">
+        <div v-if="rowFixData && rowFixData.length" class="ctable-bodyWrapper-cover" :class="[rowFixFold?'hidden-fold':'']" :style="{top: cTop + 'px'}">
           <table-body
             :store="store"
             :key="rowDrogKey"
             :listTree="listTree"
-            :rowFixed="false"
+            :rowFixed="true"
             fixed="right"
             :stripe="stripe"
             :row-class-name="rowClassName"
@@ -655,9 +658,9 @@ import Sortable from 'sortablejs'
                   // this.$message({
                   //   type: 'info',
                   //   message: '已取消复制'
-                  // });          
+                  // });
                 });
-                return 
+                return
               }
               if (oR.parent == null) {
                 if (needCopy) {
@@ -871,7 +874,12 @@ import Sortable from 'sortablejs'
         immediate: true,
         handler(value) {
           this.store.commit('setData', value);
-          this.store.commit('setFixData', value.slice(-2));
+        }
+      },
+      rowFixData: {
+        immediate: true,
+        handler(value) {
+          this.store.commit('setFixData', value);
         }
       },
 
@@ -950,6 +958,7 @@ import Sortable from 'sortablejs'
         layout,
         cTop: 0,
         rowDrogKey: 1,
+        rowFixFold: false,
         isHidden: false,
         renderExpanded: null,
         resizeProxyVisible: false,
@@ -1061,23 +1070,52 @@ div.el-table__expand-icon:not(.el-table__expand-icon--expanded) + div.c-icon-arr
   width: 20px;
   height: 100%;
 }
-.c-icon-arrow-normal {
-    position: absolute;
-    width: 20px;
-    align-items: center;
-    height: 20px;
-    text-align: center;
-    display: inline-block;
+.ctable-bodyWrapper-cover.scroll-body .arrow-cover i{
+  transform: rotate(-90deg);
 }
-.c-icon-arrow::after {
-    content: '\2194';
-    width: 26px;
-    height: 26px;
-    position: absolute;
-    top: 0;
-    left: 0px;
-    transform-origin: 50% 47%;
-    transform: rotate(90deg);
+.ctable-bodyWrapper-cover.scroll-body .arrow-cover {
+  z-index: 1;
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  border-top: 15px solid #eee;
+  border-bottom: 0;
+  opacity: 0;
+  border-left: 10px solid transparent;
+  width: 20px;
+  border-right: 10px solid transparent;
+  cursor: pointer;
+  transition: all .5s ease-out;
+}
+.ctable-bodyWrapper-cover.scroll-body:hover .arrow-cover{
+  bottom: -15px;
+  opacity: 1;
+}
+.ctable-bodyWrapper-cover.scroll-body .arrow-cover .arrow-body{
+  z-index: 1;
+  position: absolute;
+  width: 40px;
+  line-height: 15px;
+  height: 15px;
+  top: -15px;
+  left: -10px;
+}
+div.ctable-bodyWrapper-cover.fold .table-body-cover{
+  height: 1px;
+  overflow: hidden;
 }
 
+div.ctable-bodyWrapper-cover.hidden-fold{
+  height: 1px;
+  overflow: hidden;
+}
+
+
+.ctable-bodyWrapper-cover.scroll-body.fold .arrow-cover{
+  bottom: -15px;
+  opacity: 1;
+}.ctable-bodyWrapper-cover.scroll-body.fold .arrow-cover i{
+  transform: rotate(90deg);
+}
 </style>

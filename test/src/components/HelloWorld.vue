@@ -2,14 +2,23 @@
   <div class="hello">
     <el-row>
       <el-button @click="bTc">舒服</el-button>
-      <el-button @click="deleteC">隐藏列</el-button>
-      <el-button @click="pushC">插入列</el-button>
+      <el-button @click="deleteC">隐藏地址列</el-button>
+      <el-button @click="pushC">插入地址列</el-button>
       <el-button @click="cMenu">菜单</el-button>
     </el-row>
-    <CSelect :value="mmmm" :menuItems="menur" ref="Cselect"></CSelect> 
-    <menutest>
-        <menuItem v-for="item in menur" :com="item"></menuItem>
-    </menutest>
+    <el-row>
+      <el-checkbox-group v-model="checkList">
+        <el-checkbox label="列拖拽"></el-checkbox>
+        <el-checkbox label="行拖拽"></el-checkbox>
+        <el-checkbox label="行拖拽复制"></el-checkbox>
+        <el-checkbox label="行拖拽复制询问"></el-checkbox>
+        <el-checkbox label="列固定"></el-checkbox>
+      </el-checkbox-group>
+    </el-row>
+    <CSelect :value="mmmm" :top="top" :left="left" :menuItems="menur" ref="Cselect"></CSelect>
+<!--    <menutest>-->
+<!--        <menuItem v-for="item in menur" :com="item"></menuItem>-->
+<!--    </menutest>-->
     <div>
       <!-- <menuItem :com="{a:'d'}"></menuItem> -->
       <span v-for="item in tablehead1c">
@@ -45,18 +54,22 @@
       <li><a href="https://github.com/vuejs/awesome-vue" target="_blank" rel="noopener">awesome-vue</a></li>
     </ul> -->
     <Ctable
-    v-if="false"
       :data="tableData"
       @dragChange="dragChange"
+      :key="tableKey"
       row-key="id"
-      :rowFixData="[]"
+      :rowDrag="rowDrag"
+      :columnDrag="columnDrag"
+      :rowDropCopy="rowDropCopy"
+      @row-contextmenu="rightClick"
+      :rowFixData="rowFixData"
       default-expand-all
       :tree-props="{children: 'children', hasChildren: 'hasChildren'}"
       border
       max-height="700"
       :column-data="tablehead2"
       style="width: 1200px">
-      <tableColumn v-for="item in tablehead2" :key="item.label" v-bind="item" >
+      <tableColumn v-for="item in tablehead1c" :key="item.label" v-bind="item" >
         <template slot-scope="scope">
           <!-- <div @click="console(scope,item)">{{item.label}}</div> -->
           <span>{{scope.row[scope.column.property]}}</span>
@@ -110,7 +123,6 @@ import CSelect from '../common/select/src/Cmenu'
 import {deepD,da,da2} from './data'
 import menutest from '../common/menutest/index'
 import menuItem from '../common/menutest/item.vue'
-// import Menu from '../common/popmenu/menu.vue'
 
 export default {
   name: 'HelloWorld',
@@ -128,6 +140,27 @@ export default {
     //     return !item.hasOwnProperty('hidden')
     //   })
     // }
+  },
+  watch:{
+    checkList:{
+      deep: true,
+      handler(n,o) {
+        if (n.includes('列拖拽')) {this.columnDrag = true}else{this.columnDrag = false}
+        if (n.includes('行拖拽')) {this.rowDrag = true}else{this.rowDrag = false}
+        if (n.includes('行拖拽复制询问')) {this.rowDropCopy = {type: 'inquiry'}}else{
+          if (n.includes('行拖拽复制')) {this.rowDropCopy = {type: 'auto'}}else{this.rowDropCopy = {disabled:true}}
+        }
+        if (n.includes('列固定')) {
+          this.tablehead2[0]['fixed']=true
+          this.dododo()
+        }else{
+          this.tablehead2[0]['fixed']=false
+          this.dododo()
+        }
+        this.tableKey +=1
+      },
+      immediate:true
+    }
   },
   updated (){
     console.log('uuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuu')
@@ -172,6 +205,15 @@ export default {
     this.dododo()
 
     },
+    rightClick(row,c,e){
+      console.log(e,this.$refs.Cselect.$el.childNodes[0].getBoundingClientRect().width)
+      this.top = e.y
+      this.left = e.x - (this.$refs.Cselect.$el.childNodes[0].getBoundingClientRect().width)/2
+      e.stopPropagation()
+      e.preventDefault()
+      this.cashFixRow = row
+      this.cMenu()
+    },
     cMenu (){
       this.$refs.Cselect.toggleMenu()
     },
@@ -193,7 +235,28 @@ export default {
     return {
       mmmm:1,
       // menur: [(<div onClick={()=>{console.log('流口水',this)}}>流口水的肌肤</div>)],
-      menur: [(<Tt onClick={()=>{console.log('流口水',this)}}>流口水的肌肤</Tt>),(<Tt onClick={()=>{console.log('士大夫',this)}}>的肌肤</Tt>)],
+      menur: [(<Tt autoClose={true} onClick={(e,$close)=>{console.log('流口水',this,e);if(!this.cashFixRow)return; this.rowFixData.push(this.cashFixRow)}}>固定这行</Tt>),
+        (<Tt autoClose={true} onClick={(e,$close)=>{console.log('士大夫',this,e);this.rowFixData.pop()}}>取消固定</Tt>)
+      ],
+      rowDrag:false,
+      tableKey:1,
+      columnDrag:false,
+      cashFixRow:null,
+      rowDropCopy:{},
+      rowFixData:[
+        // {
+        //   date: '2016-05-04',
+        //   name: '43',
+        //   id: 43,
+        //   province: '行固定',
+        //   city: '普陀区',
+        //   address: '上海市普陀区金沙江路 1518 弄',
+        //   zip: 200333
+        // }
+      ],
+      top: null,
+      left:null,
+      checkList: ['列拖拽','行拖拽','行固定','列固定','行拖拽复制','行拖拽复制询问'],
       tablehead1:[
         {label:"姓名",
           prop:'name',
@@ -223,10 +286,10 @@ export default {
       tablehead2:[
           {label:"日期",prop:'date',align:'center',width:250},
           {label:"姓名",prop:'name',align:'center',width:250},
-          {label:"省份",prop:'province',align:'center',},
-          {label:"市区",prop:'city',align:'center',},
+          {label:"省份",prop:'province',align:'center',width:200},
+          {label:"市区",prop:'city',align:'center',width:200},
           {label:"地址",prop:'address',width:300,align:'center',},
-          {label:"邮编",prop:'zip',align:'center',}
+          {label:"邮编",prop:'zip',align:'center',width:150}
       ],
       tablehead1c:[],
       // tableData:da2,
