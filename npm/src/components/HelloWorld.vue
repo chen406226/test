@@ -124,8 +124,6 @@ import Ctable from '../common/table/src/table'
 // import CSelect from '../common/select/src/select'
 import CSelect from '../common/select/src/Cmenu'
 import {deepD,da,da2} from './data'
-import menutest from '../common/menutest/index'
-import menuItem from '../common/menutest/item.vue'
 
 export default {
   name: 'HelloWorld',
@@ -133,7 +131,7 @@ export default {
     msg: String
   },
   components:{
-    tableColumn,Ctable,menutest,menuItem,Tt,CSelect
+    tableColumn,Ctable,Tt,CSelect
   },
   computed: {
     // tablehead1c() {
