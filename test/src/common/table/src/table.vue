@@ -986,6 +986,7 @@ import Sortable from 'sortablejs'
   box-shadow: 1px 1px 6px rgba(0, 0, 0, .13);
   position: absolute;
   left: 0;
+  z-index: 1;
   top: 0;
 }
 .c-icon-arrow-bg {

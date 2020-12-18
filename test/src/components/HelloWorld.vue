@@ -65,6 +65,7 @@
       :rowDropCopy="rowDropCopy"
       @row-contextmenu="rightClick"
       @fixRow-contextmenu="fixRightClick"
+      @selection-change="handleSelectionChange"
       :rowFixData="rowFixData"
       default-expand-all
       :tree-props="{children: 'children', hasChildren: 'hasChildren'}"
@@ -72,6 +73,12 @@
       max-height="700"
       :column-data="tablehead2"
       style="width: 1200px">
+      <tableColumn type="selection" width="55">
+      </tableColumn>
+          <!-- <el-table-column
+      type="selection"
+      width="55">
+    </el-table-column> -->
       <tableColumn v-for="item in tablehead1c" :key="item.label" v-bind="item" >
         <template slot-scope="scope">
           <!-- <div @click="console(scope,item)">{{item.label}}</div> -->
@@ -243,6 +250,9 @@ export default {
       console.log(this.tableData==self,this.tableData)
       // this.tableData.forEach((item)=>console.log(item.name))
     },
+          handleSelectionChange(val) {
+        this.multipleSelection = val;
+      },
     dragChange(n,o,d) {
       console.log(n,o,d,this.tableData==d)
       this.tableData = d
@@ -260,6 +270,7 @@ export default {
       columnDrag:false,
       cashFixRow:null,
       rowDropCopy:{},
+      multipleSelection: [],
 
       rowFixData:[
         // {
