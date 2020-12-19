@@ -25,6 +25,10 @@ export const cellStarts = {
   }
 };
 
+export const cellFlagStr = {
+  levelFlag: null
+}
+
 // 这些选项不应该被覆盖
 export const cellForced = {
   selection: {
@@ -96,17 +100,33 @@ export function defaultRenderCell(h, { row, column, $index }) {
   return value;
 }
 
-export function treeCellPrefix(h, { row, treeNode, store, isClast,rowFixed, fatherIsLast ,fatherTreeIsLast}) {
+export function treeCellPrefix(h, { row, treeNode, store,levelFlag, isClast,rowFixed, fatherIsLast ,fatherTreeIsLast}) {
   if (!treeNode) return null;
   const ele = [];
   const callback = function(e) {
     e.stopPropagation();
     store.loadOrToggle(row);
   };
-  console.log(row.id,'ffffffffffffffffffffffffffffffffffffffffff',isClast,fatherIsLast,row,fatherTreeIsLast)
+  // console.log(row.id,'ffffffffffffffffffffffffffffffffffffffffff',isClast,fatherIsLast,row,fatherTreeIsLast)
   let iconCoverClasses = ['c-icon-arrow-cover'];
   if (treeNode.indent) {
     iconCoverClasses.push('c-icon-arrow-cover-f')
+  }
+
+  let flagC = ''
+  let flagT = ''
+  if (levelFlag instanceof Object && levelFlag.hasOwnProperty(treeNode.level)) {
+    flagC = 'flag flag-'+treeNode.level
+    flagT = levelFlag[treeNode.level]
+  }
+
+  if (rowFixed) {
+    ele.push(<div class={flagC+' row-fixed-flag'}>
+      {
+        treeNode.indent ? <span className="el-table__indent" style={{'padding-left': treeNode.indent + 'px'}}></span> : null
+      }
+      {flagT}
+    </div>);
   }
 
   // 站位
@@ -153,10 +173,15 @@ export function treeCellPrefix(h, { row, treeNode, store, isClast,rowFixed, fath
         n--
       } while (n>=1);
     }
+
     ele.push(<div class={iconCoverClasses}>
       {zhanwei}
       <div class={ expandClasses }
         on-click={ callback }>
+        {
+          flagT?
+          <span class={flagC}>{flagT}</span> : null
+        }
         <i class={ iconClasses }></i>
       </div>
       <div class='c-icon-arrow-bg'>

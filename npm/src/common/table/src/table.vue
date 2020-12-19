@@ -399,6 +399,9 @@ import Sortable from 'sortablejs'
           };
         }
       },
+      levelFlag: {
+        type: Object
+      },
 
       lazy: Boolean,
       rowDropCopy: {
@@ -575,7 +578,6 @@ import Sortable from 'sortablejs'
                 return
               }
               const { newIndex, oldIndex, item} = $sev
-              console.log($sev,this.$listeners, '$ssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss')
               let listTree = this.listTree
               let childrenKey = this.treeProps.children
               let nR = listTree.listTreeData[listTree.listIndexGetRowKey[newIndex]]
@@ -723,7 +725,6 @@ import Sortable from 'sortablejs'
               let c = this.store.states._columns
               let newProp = c[newIndex]['property']
               let oldProp = c[oldIndex]['property']
-              console.log(this.store.states._columns)
               let currRow = c.splice(oldIndex, 1)[0]
               c.splice(newIndex, 0, currRow)
               this.$emit('columnDropOnEnd',$sev,{newProp,oldProp})
@@ -897,8 +898,7 @@ import Sortable from 'sortablejs'
       }
     },
     updated () {
-      console.log('ddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd',this.listTree,this.$props.data)
-
+      // console.log('ddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd',this.listTree,this.$props.data)
     },
     created() {
       this.tableId = 'el-table_' + tableIdSeed++;
@@ -906,17 +906,16 @@ import Sortable from 'sortablejs'
     },
 
     mounted() {
-      console.log(this.rowDropCopy,this.border,'11111111111111111111')
       this.bindEvents();
       this.store.updateColumns();
       this.doLayout();
+
 
       this.resizeState = {
         width: this.$el.offsetWidth,
         height: this.$el.offsetHeight
       };
       // init filters
-      console.log(this.store.states.columns,'34444444')
       this.store.states.columns.forEach(column => {
         if (column.filteredValue && column.filteredValue.length) {
           this.store.commit('filterChange', {
@@ -1114,4 +1113,32 @@ div.ctable-bodyWrapper-cover.hidden-fold{
 }.ctable-bodyWrapper-cover.scroll-body.fold .arrow-cover i{
   transform: rotate(90deg);
 }
+.el-table__expand-icon .flag {
+  display: inline-block;
+  overflow: hidden;
+  transition: all .5s ease-in-out;
+  transform: scale(0);
+  position: absolute;
+  max-width: 40px;
+  top: -16px;
+}
+.ctable-bodyWrapper-cover .row-fixed-flag {
+  position: absolute;
+  left: 4px;
+}
+.el-table__expand-icon--expanded.el-table__expand-icon:hover span.flag {
+  transform: rotate(-90deg) scale(1);
+}
+.el-table__expand-icon:hover .flag {
+  display: inline-block;
+  overflow: hidden;
+  transform: scale(1.1);
+
+}
+
+.el-table--scrollable-x.el-table--border {
+  border-right: 1px solid #EBEEF5;
+}
+
+
 </style>

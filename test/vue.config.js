@@ -10,6 +10,8 @@ module.exports = {
   lintOnSave: false,
   devServer: {
     port: 9030,
+    host: '0.0.0.0',
+    // useLocalIp: true,
     open:true,
     proxy: {
     '/api':{ // 要代理的接口名

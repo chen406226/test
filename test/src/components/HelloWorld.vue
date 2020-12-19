@@ -67,6 +67,7 @@
       @fixRow-contextmenu="fixRightClick"
       @selection-change="handleSelectionChange"
       :rowFixData="rowFixData"
+      :levelFlag="{0:'年',1:'月',2:'周'}"
       default-expand-all
       :tree-props="{children: 'children', hasChildren: 'hasChildren'}"
       border
@@ -162,10 +163,10 @@ export default {
         }
         if (n.includes('列固定')) {
           this.tablehead2[0]['fixed']=true
-          this.dododo()
+          // this.dododo()
         }else{
           this.tablehead2[0]['fixed']=false
-          this.dododo()
+          // this.dododo()
         }
         this.tableKey +=1
       },

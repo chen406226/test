@@ -27,7 +27,6 @@ Watcher.prototype.mutations = {
   },
 
   setFixData(states,data){
-    console.log(states,'sssssssssss',data)
     states.fixData = data;
   },
 

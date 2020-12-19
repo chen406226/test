@@ -380,13 +380,11 @@ export default {
       const rowClasses = this.getRowClass(row, $index);
       let rowKey = this.store.states.rowKey
       let rowTreeD = this.listTree['listTreeData'][row[rowKey]] || {}
-      console.log(rowTreeD,'*********************************************************************')
       if (this.rowFixed) {
         rowTreeD = {}
       }
 
       const {isClast = false, fatherIsLast = false, fatherTreeIsLast = ''} = rowTreeD
-      console.log(this.listTree['listTreeData'][row[rowKey]],rowKey,'cccccccccccccccccccccccccccccccccccccccccccccccccccccc')
       let display = true;
       if (treeRowData) {
         rowClasses.push('el-table__row--level-' + treeRowData.level);
@@ -422,6 +420,7 @@ export default {
               fatherIsLast,
               fatherTreeIsLast,
               rowFixed:this.rowFixed,
+              levelFlag: this.table.levelFlag,
               row,
               $index
             };
