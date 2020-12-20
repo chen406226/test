@@ -19,12 +19,14 @@ yarn build
 ```
 yarn lint
 ```
-babel 7 不兼容
-module.exports = {
-  presets: [
-    '@vue/cli-plugin-babel/preset'
-  ],
-}
 
 ### Customize configuration
 See [Configuration Reference](https://cli.vuejs.org/config/).
+
+
+
+| 左对齐 | 右对齐 | 居中对齐 |
+| :-----| ----: | :----: |
+| 单元格 | 单元格 | 单元格 |
+| 单元格 | 单元格 | 单元格 |
+

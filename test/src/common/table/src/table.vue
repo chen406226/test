@@ -714,7 +714,7 @@ import Sortable from 'sortablejs'
             handle: 'th:not(.no-drop)',
             onEnd: ($sev) => {
               const { item, newIndex, oldIndex } = $sev
-              if (this.$listeners.hasOwnProperty('overrideRowDropOnEnd')) {
+              if (this.$listeners.hasOwnProperty('overrideColumnDropOnEnd')) {
                 this.$emit('overrideColumnDropOnEnd',$sev,this.store.updateColumns)
                 this.$nextTick(()=>{
                   this.store.updateColumns()
