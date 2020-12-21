@@ -402,6 +402,9 @@ import Sortable from 'sortablejs'
       levelFlag: {
         type: Object
       },
+      headerTipInfo: {
+        type: Object
+      },
 
       lazy: Boolean,
       rowDropCopy: {
@@ -609,30 +612,35 @@ import Sortable from 'sortablejs'
                   cancelButtonText: '取消',
                   type: 'info'
                 }).then(() => {
+                  let oldRow = null
                   if (oR.parent == null) {
-                    currRow = this.data[oR.index]
+                    oldRow = this.data[oR.index]
                   } else {
                     let oRp = listTree.listTreeData[oR.parent]
-                    currRow = oRp['row'][childrenKey][oR.index]
+                    oldRow = oRp['row'][childrenKey][oR.index]
                   }
-                  currRow = Object.assign({},currRow,{
-                    [this.rowKey]: new Date().getTime(),
+                  currRow = Object.assign({},oldRow,{
                     isDropCopyed: true
                   })
+                  if (this.rowKey) {
+                    currRow[this.rowKey] = currRow[this.rowKey] + '-Copy'
+                  }
+                  let nRp = {row: null}
+                  let i = nR.index
                   if (nR.parent == null) {
                     this.data.splice(nR.index, 0, currRow)
                   } else {
-                    let i = nR.index
                     if (newIndex>oldIndex && nR.parent!=oR.parent) {
                       i=i+1
                     }
-                    let nRp = listTree.listTreeData[nR.parent]
+                    nRp = listTree.listTreeData[nR.parent]
                     nRp['row'][childrenKey].splice(i, 0,currRow)
                   }
                   this.rowDrogKey += 1
                   this.$nextTick(()=>{
                     this.updateDragDrop()
                   })
+                  this.$emit('rowDropOnEnd',$sev,{copyRow: currRow, oldRow: oldRow, parent: {row: nRp['row'],newIndex: i}})
                   this.$message({
                     type: 'success',
                     message: '复制成功!'
@@ -644,17 +652,19 @@ import Sortable from 'sortablejs'
                     let oRp = listTree.listTreeData[oR.parent]
                     currRow = oRp['row'][childrenKey].splice(oR.index, 1)[0]
                   }
+                  let nRp = {row: null}
+                  let i = nR.index
                   if (nR.parent == null) {
                     this.data.splice(nR.index, 0, currRow)
                   } else {
-                    let i = nR.index
                     if (newIndex>oldIndex && nR.parent!=oR.parent) {
                       i=i+1
                     }
-                    let nRp = listTree.listTreeData[nR.parent]
+                    nRp = listTree.listTreeData[nR.parent]
                     nRp['row'][childrenKey].splice(i, 0,currRow)
                   }
                   this.rowDrogKey += 1
+                  this.$emit('rowDropOnEnd',$sev,{oldRow: currRow,copyRow: null, parent: {row: nRp['row'],newIndex: i}})
                   this.$nextTick(()=>{
                     this.updateDragDrop()
                   })
@@ -665,38 +675,49 @@ import Sortable from 'sortablejs'
                 });
                 return
               }
+              let copyRow = null
+              let oldRow = null
               if (oR.parent == null) {
                 if (needCopy) {
                   currRow = this.data[oR.index]
+                  oldRow = this.data[oR.index]
                   currRow = Object.assign({},currRow,{
-                    [this.rowKey]: new Date().getTime(),
                     isDropCopyed: true
                   })
-                  } else {
+                  if (this.rowKey) {
+                    currRow[this.rowKey] = currRow[this.rowKey]+'-Copy'
+                  }
+                } else {
                   currRow = this.data.splice(oR.index, 1)[0]
                 }
               } else {
                 let oRp = listTree.listTreeData[oR.parent]
                 if (needCopy) {
                   currRow = oRp['row'][childrenKey][oR.index]
+                  oldRow = oRp['row'][childrenKey][oR.index]
                   currRow = Object.assign({},currRow,{
-                    [this.rowKey]: new Date().getTime(),
                     isDropCopyed: true
                   })
+                  if (this.rowKey) {
+                    currRow[this.rowKey] = currRow[this.rowKey]+'-Copy'
+                  }
                 } else {
                   currRow = oRp['row'][childrenKey].splice(oR.index, 1)[0]
                 }
               }
+              let i = nR.index
+              let nRp = {row: null}
               if (nR.parent == null) {
                 this.data.splice(nR.index, 0, currRow)
               } else {
-                let i = nR.index
                 if (newIndex>oldIndex && nR.parent!=oR.parent) {
                   i=i+1
                 }
-                let nRp = listTree.listTreeData[nR.parent]
+                nRp = listTree.listTreeData[nR.parent]
                 nRp['row'][childrenKey].splice(i, 0,currRow)
               }
+              this.$emit('rowDropOnEnd',$sev,{oldRow: oldRow || currRow, copyRow: oldRow==null?null:currRow, parent: {row: nRp['row'],newIndex: i}})
+
               this.rowDrogKey += 1
               this.$nextTick(()=>{
                 this.updateDragDrop()
@@ -709,11 +730,12 @@ import Sortable from 'sortablejs'
       columnDrop () {
         this.$nextTick(() => {
           let xTable = this.$refs.headerWrapper
+          // console.log(xTable,'xxxxxxxxxxxxxxxxxxxxxxxxxxxx')
           this.sortable = Sortable.create(xTable.querySelector('.el-table__header thead tr:first-child'), {
             handle: 'th:not(.no-drop)',
             onEnd: ($sev) => {
               const { item, newIndex, oldIndex } = $sev
-              if (this.$listeners.hasOwnProperty('overrideRowDropOnEnd')) {
+              if (this.$listeners.hasOwnProperty('overrideColumnDropOnEnd')) {
                 this.$emit('overrideColumnDropOnEnd',$sev,this.store.updateColumns)
                 this.$nextTick(()=>{
                   this.store.updateColumns()
@@ -734,7 +756,9 @@ import Sortable from 'sortablejs'
         })
       },
       reView () {
-        this.updateDragDrop()
+        setTimeout(()=>{
+          this.updateDragDrop()
+        }, 200)
       },
 
       updateDragDrop() {
@@ -985,6 +1009,7 @@ import Sortable from 'sortablejs'
   box-shadow: 1px 1px 6px rgba(0, 0, 0, .13);
   position: absolute;
   left: 0;
+  z-index: 1;
   top: 0;
 }
 .c-icon-arrow-bg {

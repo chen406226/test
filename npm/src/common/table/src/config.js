@@ -33,11 +33,29 @@ export const cellFlagStr = {
 export const cellForced = {
   selection: {
     renderHeader: function(h, { store }) {
-      return <el-checkbox
+      if (store.table.$props.hasOwnProperty('headerTipInfo') && store.table.$props.headerTipInfo) {
+        const {effect='dark',className='',placement='top',content=''} = store.table.$props.headerTipInfo
+        return <span>
+          <el-checkbox
+            disabled={ store.states.data && store.states.data.length === 0 }
+            indeterminate={ store.states.selection.length > 0 && !this.isAllSelected }
+            nativeOn-click={ this.toggleAllSelection }
+            value={ this.isAllSelected } />
+          <el-tooltip
+            class={className}
+            effect={effect}
+            placement={placement}
+            content={content}>
+            <i class="el-icon-question" style="color: rgb(255, 153, 0);margin-left:4px;"></i>
+          </el-tooltip>
+        </span>
+      } else {
+        return <el-checkbox
         disabled={ store.states.data && store.states.data.length === 0 }
         indeterminate={ store.states.selection.length > 0 && !this.isAllSelected }
         nativeOn-click={ this.toggleAllSelection }
         value={ this.isAllSelected } />;
+      }
     },
     renderCell: function(h, { row, column, store, $index }) {
       return <el-checkbox

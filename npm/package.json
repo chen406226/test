@@ -1,6 +1,6 @@
 {
   "name": "celtable",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "description": "tree-table element-ui table plus",
   "main": "./lib/ctable.umd.min.js",
   "keywords": [

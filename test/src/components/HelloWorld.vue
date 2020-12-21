@@ -63,9 +63,11 @@
       :rowDrag="rowDrag"
       :columnDrag="columnDrag"
       :rowDropCopy="rowDropCopy"
+      :headerTipInfo="headerTipInfo"
       @row-contextmenu="rightClick"
       @fixRow-contextmenu="fixRightClick"
       @selection-change="handleSelectionChange"
+      @rowDropOnEnd="rowDropOnEnd"
       :rowFixData="rowFixData"
       :levelFlag="{0:'年',1:'月',2:'周'}"
       default-expand-all
@@ -74,7 +76,7 @@
       max-height="700"
       :column-data="tablehead2"
       style="width: 1200px">
-      <tableColumn type="selection" width="55">
+      <tableColumn type="selection" width="55" :render-header="renderHeader">
       </tableColumn>
           <!-- <el-table-column
       type="selection"
@@ -198,8 +200,8 @@ export default {
     overrideColumnDropOnEnd({newIndex},m) {
       console.log(newIndex,m,'vvvvvvvvvvvvvvvvvvvvvvvvvv')
     },
-    rowDropOnEnd($ev) {
-      console.log($ev,'vvvvvvvvvvvvvvvvvvvvvvvvvv')
+    rowDropOnEnd($ev,d) {
+      console.log($ev,d,'###################')
     },
     columnDropOnEnd({newIndex,oldIndex},{newProp,oldProp}) {
       // 内部已优化， 如有建议修改深复制的column数据，不要操作渲染依赖数据避免浪费
@@ -257,7 +259,18 @@ export default {
     dragChange(n,o,d) {
       console.log(n,o,d,this.tableData==d)
       this.tableData = d
-    }
+    },
+    renderHeader: function renderHeader(h, _ref) {
+      var store = _ref.store;
+      return h("span", {
+        "attrs": {
+
+        },
+        "nativeOn": {
+          "click": ()=>{}
+        }
+      });
+    },
   },
   data() {
     return {
@@ -272,7 +285,12 @@ export default {
       cashFixRow:null,
       rowDropCopy:{},
       multipleSelection: [],
-
+      headerTipInfo: {
+        className: 's',
+        effect: 'dark',
+        content: '全选仅选择最外层',
+        placement: 'top'
+      },
       rowFixData:[
         // {
         //   date: '2016-05-04',
