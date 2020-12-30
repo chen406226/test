@@ -413,6 +413,18 @@ import Sortable from 'sortablejs'
           return {type: 'confirm', disabled: true}
         }
       },
+      rowDragOptions: {
+        type: Object,
+        default() {
+          return {}
+        }
+      },
+      columnDragOptions: {
+        type: Object,
+        default() {
+          return {}
+        }
+      },
       rowDrag: Boolean,
       columnDrag: Boolean,
 
@@ -574,6 +586,7 @@ import Sortable from 'sortablejs'
           let xTable = this.$refs.bodyWrapper
           this.sortable = Sortable.create(xTable.querySelector('.el-table__body-wrapper>.el-table__body tbody'), {
             // handle: '.drag-btn',
+            animation: 300,
             handle: '.el-table__row',
             onEnd: ($sev) => {
               if (this.$listeners.hasOwnProperty('overrideRowDropOnEnd')) {
@@ -602,7 +615,7 @@ import Sortable from 'sortablejs'
 
               let currRow
               let needCopy = false
-              const {type = '', disabled = false} = this.rowDropCopy
+              const {type = '', disabled = false, suffix = null, suffixV = '-Copy'} = this.rowDropCopy
               if (type == 'auto') {
                 needCopy = true
               }
@@ -624,6 +637,15 @@ import Sortable from 'sortablejs'
                   })
                   if (this.rowKey) {
                     currRow[this.rowKey] = currRow[this.rowKey] + '-Copy'
+                  }
+                  if (suffix && Array.isArray(suffix)) {
+                    suffix.forEach(item => {
+                      if (suffixV instanceof Function) {
+                        currRow[item] = suffixV(currRow[item])
+                      } else {
+                        currRow[item] = currRow[item] + suffixV
+                      }
+                    })
                   }
                   let nRp = {row: null}
                   let i = nR.index
@@ -723,16 +745,17 @@ import Sortable from 'sortablejs'
                 this.updateDragDrop()
               })
               // this.store.commit('setData', this.data)
-            }
+            },
+            ...this.rowDragOptions
           })
         })
       },
       columnDrop () {
         this.$nextTick(() => {
           let xTable = this.$refs.headerWrapper
-          // console.log(xTable,'xxxxxxxxxxxxxxxxxxxxxxxxxxxx')
           this.sortable = Sortable.create(xTable.querySelector('.el-table__header thead tr:first-child'), {
             handle: 'th:not(.no-drop)',
+            animation: 300,
             onEnd: ($sev) => {
               const { item, newIndex, oldIndex } = $sev
               if (this.$listeners.hasOwnProperty('overrideColumnDropOnEnd')) {
@@ -751,7 +774,8 @@ import Sortable from 'sortablejs'
               c.splice(newIndex, 0, currRow)
               this.$emit('columnDropOnEnd',$sev,{newProp,oldProp})
               this.store.updateColumns()
-            }
+            },
+            ...this.columnDragOptions
           })
         })
       },

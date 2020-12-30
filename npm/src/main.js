@@ -1,22 +1,23 @@
 import _CTable from './common/table/index.js'
-import _CMenu from './common/menu/index.js'
 import _CTableColumn from './common/table-column/index'
 import _CTableColumns from './common/table-column/cover'
+import _CElTableColumns from './common/table-column/elcolumns'
+import _CMenu from './common/menu/index.js'
 import _CMenuListItem from './common/menu/item.js'
 
 export const CTable = _CTable
 export const CTableColumn = _CTableColumn
 export const CTableColumns = _CTableColumns
+export const CElTableColumns = _CElTableColumns
 export const CMenu = _CMenu
 export const CMenuListItem = _CMenuListItem
 
-// Ctable.install = Vue => Vue.component(Ctable.name, Ctable)
-
 const components = [
   CTable,
-  CMenu,
   CTableColumn,
   CTableColumns,
+  CElTableColumns,
+  CMenu,
   CMenuListItem
 ]
 
@@ -33,11 +34,12 @@ if (typeof window !== 'undefined' && window.Vue) {
 
 
 export default {
-  version: '0.0.3',
+  version: '0.2.3',
   install,
   CTable,
-  CMenu,
   CTableColumn,
   CTableColumns,
+  CElTableColumns,
+  CMenu,
   CMenuListItem
 }

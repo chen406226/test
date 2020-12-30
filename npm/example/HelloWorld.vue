@@ -15,46 +15,14 @@
         <el-checkbox label="列固定"></el-checkbox>
       </el-checkbox-group>
     </el-row>
-    <CSelect :value="mmmm" :top="top" :left="left" :menuItems="menur" ref="Cselect"></CSelect>
-    <CSelect :top="topc" :left="leftc" :menuItems="menurc" ref="Cselectc"></CSelect>
-<!--    <menutest>-->
-<!--        <menuItem v-for="item in menur" :com="item"></menuItem>-->
-<!--    </menutest>-->
+    <Cmenu :value="mmmm" :top="top" :left="left" :show.sync="shows" :menuItems="menur" ref="Cselect"></Cmenu>
+    <Cmenu :top="topc" :left="leftc" :menuItems="menurc" :show.sync="showsc" ref="Cselectc"></Cmenu>
     <div>
-      <!-- <menuItem :com="{a:'d'}"></menuItem> -->
       <span v-for="item in tablehead1c">
         {{item.label}}
       </span>
     </div>
-    <!-- <img src="../assets/f1.svg" alt="" srcset=""> -->
-    <!-- <h1>{{ msg }}</h1>
-    <p>
-      For a guide and recipes on how to configure / customize this project,<br>
-      check out the
-      <a href="https://cli.vuejs.org" target="_blank" rel="noopener">vue-cli documentation</a>.
-    </p>
-    <h3>Installed CLI Plugins</h3>
-    <ul>
-      <li><a href="https://github.com/vuejs/vue-cli/tree/dev/packages/%40vue/cli-plugin-babel" target="_blank" rel="noopener">babel</a></li>
-      <li><a href="https://github.com/vuejs/vue-cli/tree/dev/packages/%40vue/cli-plugin-eslint" target="_blank" rel="noopener">eslint</a></li>
-    </ul>
-    <h3>Essential Links</h3>
-    <ul>
-      <li><a href="https://vuejs.org" target="_blank" rel="noopener">Core Docs</a></li>
-      <li><a href="https://forum.vuejs.org" target="_blank" rel="noopener">Forum</a></li>
-      <li><a href="https://chat.vuejs.org" target="_blank" rel="noopener">Community Chat</a></li>
-      <li><a href="https://twitter.com/vuejs" target="_blank" rel="noopener">Twitter</a></li>
-      <li><a href="https://news.vuejs.org" target="_blank" rel="noopener">News</a></li>
-    </ul>
-    <h3>Ecosystem</h3>
-    <ul>
-      <li><a href="https://router.vuejs.org" target="_blank" rel="noopener">vue-router</a></li>
-      <li><a href="https://vuex.vuejs.org" target="_blank" rel="noopener">vuex</a></li>
-      <li><a href="https://github.com/vuejs/vue-devtools#vue-devtools" target="_blank" rel="noopener">vue-devtools</a></li>
-      <li><a href="https://vue-loader.vuejs.org" target="_blank" rel="noopener">vue-loader</a></li>
-      <li><a href="https://github.com/vuejs/awesome-vue" target="_blank" rel="noopener">awesome-vue</a></li>
-    </ul> -->
-    <Ctable
+    <CTable
       :data="tableData"
       ref="ctable"
       @dragChange="dragChange"
@@ -66,11 +34,11 @@
       :headerTipInfo="headerTipInfo"
       @row-contextmenu="rightClick"
       @fixRow-contextmenu="fixRightClick"
-      @selection-change="handleSelectionChange"
+      @cell-click="cellClick"
       @rowDropOnEnd="rowDropOnEnd"
-      :rowFixData="rowFixData"
       :rowDragOptions="{animation: 300}"
       :columnDragOptions="{animation: 300}"
+      :rowFixData="rowFixData"
       :levelFlag="{0:'年',1:'月',2:'周'}"
       default-expand-all
       :tree-props="{children: 'children', hasChildren: 'hasChildren'}"
@@ -78,66 +46,18 @@
       max-height="700"
       :column-data="tablehead2"
       style="width: 1200px">
-      <tableColumn type="selection" width="55" :render-header="renderHeader">
-      </tableColumn>
-          <!-- <el-table-column
-      type="selection"
-      width="55">
-    </el-table-column> -->
-      <tableColumn v-for="item in tablehead1c" :key="item.label" v-bind="item" >
-        <template slot-scope="scope">
-          <!-- <div @click="console(scope,item)">{{item.label}}</div> -->
-          <span>{{scope.row[scope.column.property]}}</span>
-          <!-- <div v-if="scope.column.property=='date' || true">
-            {{scope.row[scope.column.property]}}
-          </div>
-          <div v-else>
-            <el-input type='text' v-model="scope.row[scope.column.property]"></el-input>
-          </div> -->
-          <!-- <div v-if="scope.prop=='date'"> 第二种方法
-            {{scope.row[scope.prop]}}
-          </div>
-          <div v-else>
-            <el-input type='text' v-model="scope.row[scope.prop]"></el-input>
-          </div> -->
-        </template>
-      </tableColumn>
-    </Ctable>
-      <!-- :rowDropCopy="{type: 'inquiry'}" -->
-    <!-- <Ctable
-      ref="ctable"
-      :data="tableData1"
-      @dragChange="dragChange"
-      row-key="id"
-      :rowFixData="[]"
-      rowDrag
-      columnDrag
-      default-expand-all
-      @columnDropOnEnd="columnDropOnEnd"
-      :tree-props="{children: 'children', hasChildren: 'hasChildren'}"
-      border
-      max-height="700"
-      style="width: 1200px">
-      <tableColumn v-for="item in tablehead1c" :key="item.label" v-bind="item" >
+      <CtableColumns v-for="item in tablehead1c" :key="item.label" v-bind="item" >
         <template slot-scope="scope">
           <span>{{scope.row[scope.column.property]}}</span>
         </template>
-      </tableColumn>
-    </Ctable> -->
-    <span>{{mmmm}}</span>
+      </CtableColumns>
+    </CTable>
   </div>
 </template>
 
 <script>
-import tableColumn from './tableColumn'
-// import Tt from './tt'
-import Tt from '../common/select/src/ListItem'
-import Ctable from '../common/table/src/table'
-// import CSelect from '../common/select/src/select'
-import CSelect from '../common/select/src/Cmenu'
+import {CMenuListItem} from 'celtable'
 import {deepD,da,da2} from './data'
-import menutest from '../common/menutest/index'
-import menuItem from '../common/menutest/item.vue'
 
 export default {
   name: 'HelloWorld',
@@ -145,34 +65,30 @@ export default {
     msg: String
   },
   components:{
-    tableColumn,Ctable,menutest,menuItem,Tt,CSelect
+    CMenuListItem
   },
   computed: {
-    // tablehead1c() {
-    //   console.log('ccccccccccccccccccccccccccccccccccccccccccccccccccccccccc!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!')
-    //   return this.tablehead2.filter((item,index)=>{
-    //     console.log(item,!item.hidden)
-    //     return !item.hasOwnProperty('hidden')
-    //   })
-    // }
   },
   watch:{
     checkList:{
       deep: true,
       handler(n,o) {
+        if (!this.$refs.ctable) {
+          return
+        }
         if (n.includes('列拖拽')) {this.columnDrag = true}else{this.columnDrag = false}
         if (n.includes('行拖拽')) {this.rowDrag = true}else{this.rowDrag = false}
         if (n.includes('行拖拽复制询问')) {this.rowDropCopy = {type: 'inquiry'}}else{
-          if (n.includes('行拖拽复制')) {this.rowDropCopy = {type: 'auto', suffix:['Name'],suffixV:'-Copy'}}else{this.rowDropCopy = {disabled:true}}
+          if (n.includes('行拖拽复制')) {this.rowDropCopy = {type: 'auto'}}else{this.rowDropCopy = {disabled:true}}
         }
         if (n.includes('列固定')) {
           this.tablehead2[0]['fixed']=true
           // this.dododo()
         }else{
           this.tablehead2[0]['fixed']=false
-          // this.dododo()
         }
-        this.tableKey +=1
+        this.dododo()
+        // this.tableKey +=1
       },
       immediate:true
     }
@@ -181,10 +97,8 @@ export default {
     console.log('uuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuu')
   },
   mounted(){
+    console.log(this.$refs.ctable,'iiiiiiiiiiiiiiiiiiiii')
     this.dododo()
-    // setInterval(() => {
-    //   this.mmmm +=1
-    // }, 1000);
   },
   methods:{
     console(scope){
@@ -202,8 +116,8 @@ export default {
     overrideColumnDropOnEnd({newIndex},m) {
       console.log(newIndex,m,'vvvvvvvvvvvvvvvvvvvvvvvvvv')
     },
-    rowDropOnEnd($ev,d) {
-      console.log($ev,d,'###################')
+    rowDropOnEnd($ev) {
+      console.log($ev,'vvvvvvvvvvvvvvvvvvvvvvvvvv')
     },
     columnDropOnEnd({newIndex,oldIndex},{newProp,oldProp}) {
       // 内部已优化， 如有建议修改深复制的column数据，不要操作渲染依赖数据避免浪费
@@ -241,10 +155,16 @@ export default {
       this.cMenuc()
     },
     cMenu (){
-      this.$refs.Cselect.toggleMenu()
+      // this.$refs.Cselect.toggleMenu()
+      this.shows = true
     },
     cMenuc (){
-      this.$refs.Cselectc.toggleMenu()
+      // this.$refs.Cselectc.toggleMenu()
+      this.showsc = true
+
+    },
+    cellClick () {
+      console.log('celclick')
     },
     bTc(){
       window.ssD = self = this.tableData
@@ -255,44 +175,25 @@ export default {
       console.log(this.tableData==self,this.tableData)
       // this.tableData.forEach((item)=>console.log(item.name))
     },
-          handleSelectionChange(val) {
-        this.multipleSelection = val;
-      },
     dragChange(n,o,d) {
       console.log(n,o,d,this.tableData==d)
       this.tableData = d
-    },
-    renderHeader: function renderHeader(h, _ref) {
-      var store = _ref.store;
-      return h("span", {
-        "attrs": {
-
-        },
-        "nativeOn": {
-          "click": ()=>{}
-        }
-      });
-    },
+    }
   },
   data() {
     return {
       mmmm:1,
       // menur: [(<div onClick={()=>{console.log('流口水',this)}}>流口水的肌肤</div>)],
-      menur: [(<Tt autoClose={true} onClick={(e,$close)=>{console.log('流口水',this,e);if(!this.cashFixRow)return; this.rowFixData.push(this.cashFixRow)}}>固定这行</Tt>)
+      menur: [(<CMenuListItem autoClose={true} onClick={(e,$close)=>{console.log('流口水',this,e);if(!this.cashFixRow)return; this.rowFixData.push(this.cashFixRow)}}>固定这行</CMenuListItem>)
       ],
-      menurc:[(<Tt autoClose={true} onClick={(e,$close)=>{console.log('士大夫',this,e);this.rowFixData.pop()}}>取消固定</Tt>)],
-      rowDrag:false,
+      menurc:[(<CMenuListItem autoClose={true} onClick={(e,$close)=>{console.log('士大夫',this,e);this.rowFixData.pop()}}>取消固定</CMenuListItem>)],
+      rowDrag:true,
       tableKey:1,
-      columnDrag:false,
+      columnDrag:true,
       cashFixRow:null,
       rowDropCopy:{},
-      multipleSelection: [],
-      headerTipInfo: {
-        className: 's',
-        effect: 'dark',
-        content: '全选仅选择最外层',
-        placement: 'top'
-      },
+      shows:false,
+      showsc:false,
       rowFixData:[
         // {
         //   date: '2016-05-04',
@@ -304,6 +205,12 @@ export default {
         //   zip: 200333
         // }
       ],
+      headerTipInfo: {
+        className: 's',
+        effect: 'dark',
+        content: '全选仅选择最外层',
+        placement: 'top'
+      },
       top: null,
       topc: null,
       left:null,
