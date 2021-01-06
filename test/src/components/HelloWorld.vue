@@ -129,7 +129,8 @@
 </template>
 
 <script>
-import tableColumn from './tableColumn'
+// import tableColumn from './tableColumn'
+import tableColumn from '../common/table/src/table-column.js'
 // import Tt from './tt'
 import Tt from '../common/select/src/ListItem'
 import Ctable from '../common/table/src/table'
@@ -347,7 +348,7 @@ export default {
         {label: '省份', prop: 'province', align: 'center', width: 100},
         {label: '市区', prop: 'city', align: 'center', width: 200},
         {label: '地址', prop: 'address', width: 300, align: 'center'},
-        {label: '邮编', prop: 'zip', align: 'center', width: 150}
+        {label: '邮编',  align: 'center', width: 150}
       ],
       tablehead1c:[],
       // tableData:da2,

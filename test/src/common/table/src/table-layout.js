@@ -99,8 +99,9 @@ class TableLayout {
     // fix issue (https://github.com/ElemeFE/element/pull/16956)
     const headerTrElm = headerWrapper ? headerWrapper.querySelector('.el-table__header tr') : null;
     const noneHeader = this.headerDisplayNone(headerTrElm);
+    let i = this.table.border ? 1 : 0
+    const headerHeight = this.headerHeight = !this.showHeader ? 0 : headerWrapper.offsetHeight + i;
 
-    const headerHeight = this.headerHeight = !this.showHeader ? 0 : headerWrapper.offsetHeight;
     if (this.showHeader && !noneHeader && headerWrapper.offsetWidth > 0 && (this.table.columns || []).length > 0 && headerHeight < 2) {
       return Vue.nextTick(() => this.updateElsHeight());
     }

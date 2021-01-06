@@ -770,11 +770,11 @@ import Sortable from 'sortablejs'
               }
 
               let c = this.store.states._columns
-              let newProp = c[newIndex]['property']
-              let oldProp = c[oldIndex]['property']
+              let newProp = c[newIndex]['property'] || c[newIndex]
+              let oldProp = c[oldIndex]['property'] || c[oldIndex]
               let currRow = c.splice(oldIndex, 1)[0]
               c.splice(newIndex, 0, currRow)
-              this.$emit('columnDropOnEnd',$sev,{newProp,oldProp})
+              this.$emit('columnDropOnEnd',$sev,{newProp,oldProp,c})
               this.store.updateColumns()
               this.$nextTick(()=>{
                   this.layout.updateElsHeight();
