@@ -78,7 +78,7 @@
       max-height="700"
       :column-data="tablehead2"
       style="width: 1200px">
-      <tableColumn type="selection" width="55" :render-header="renderHeader">
+      <tableColumn type="selection" width="55" fixed>
       </tableColumn>
           <!-- <el-table-column
       type="selection"
@@ -336,12 +336,18 @@ export default {
       }
       ],
       tablehead2:[
-          {label:"日期",prop:'date',align:'center',width:250},
-          {label:"姓名",prop:'name',align:'center',width:250},
-          {label:"省份",prop:'province',align:'center',width:200},
-          {label:"市区",prop:'city',align:'center',width:200},
-          {label:"地址",prop:'address',width:300,align:'center',},
-          {label:"邮编",prop:'zip',align:'center',width:150}
+          // {label:"日期",prop:'date',align:'center',width:250},
+          // {label:"姓名",prop:'name',align:'center',width:250},
+          // {label:"省份",prop:'province',align:'center',width:200},
+          // {label:"市区",prop:'city',align:'center',width:200},
+          // {label:"地址",prop:'address',width:300,align:'center',},
+          // {label:"邮编",prop:'zip',align:'center',width:150}
+                             {label: '日期', prop: 'date', align: 'center', width: 400},
+        {label: '姓ddfgffdgfd名', prop: 'name', align: 'center', width: 50},
+        {label: '省份', prop: 'province', align: 'center', width: 100},
+        {label: '市区', prop: 'city', align: 'center', width: 200},
+        {label: '地址', prop: 'address', width: 300, align: 'center'},
+        {label: '邮编', prop: 'zip', align: 'center', width: 150}
       ],
       tablehead1c:[],
       // tableData:da2,

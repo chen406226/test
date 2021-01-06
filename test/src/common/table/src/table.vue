@@ -762,6 +762,8 @@ import Sortable from 'sortablejs'
                 this.$emit('overrideColumnDropOnEnd',$sev,this.store.updateColumns)
                 this.$nextTick(()=>{
                   this.store.updateColumns()
+                  this.layout.updateElsHeight();
+                  this.layout.updateColumnsWidth();
                   this.updateDragDrop()
                 })
                 return
@@ -774,6 +776,10 @@ import Sortable from 'sortablejs'
               c.splice(newIndex, 0, currRow)
               this.$emit('columnDropOnEnd',$sev,{newProp,oldProp})
               this.store.updateColumns()
+              this.$nextTick(()=>{
+                  this.layout.updateElsHeight();
+                  this.layout.updateColumnsWidth();
+              })
             },
             ...this.columnDragOptions
           })
