@@ -135,9 +135,9 @@ export default {
                     </div>
                   </th>))
                 }
-                {
-                  this.hasGutter ? <th class="gutter"></th> : ''
-                }
+                {/*{*/}
+                {/*  this.hasGutter ? <th class="gutter"></th> : ''*/}
+                {/*}*/}
               </tr>
             )
           }

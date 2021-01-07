@@ -754,10 +754,14 @@ import Sortable from 'sortablejs'
         this.$nextTick(() => {
           let xTable = this.$refs.headerWrapper
           this.sortable = Sortable.create(xTable.querySelector('.el-table__header thead tr:first-child'), {
-            handle: 'th:not(.no-drop)',
+            handle: 'th:not(.no-drop):not(.gutter)',
+            filter: 'gutter',
             animation: 300,
             onEnd: ($sev) => {
-              const { item, newIndex, oldIndex } = $sev
+              let { item, newIndex, oldIndex } = $sev
+              let c = this.store.states._columns
+              if (newIndex >= c.length) newIndex = c.length -1
+              $sev.newIndex = newIndex
               if (this.$listeners.hasOwnProperty('overrideColumnDropOnEnd')) {
                 this.$emit('overrideColumnDropOnEnd',$sev,this.store.updateColumns)
                 this.$nextTick(()=>{
@@ -769,9 +773,8 @@ import Sortable from 'sortablejs'
                 return
               }
 
-              let c = this.store.states._columns
-              let newProp = c[newIndex]['property'] || c[newIndex]
-              let oldProp = c[oldIndex]['property'] || c[oldIndex]
+              let newProp = c[newIndex]['property']
+              let oldProp = c[oldIndex]['property']
               let currRow = c.splice(oldIndex, 1)[0]
               c.splice(newIndex, 0, currRow)
               this.$emit('columnDropOnEnd',$sev,{newProp,oldProp,c})
