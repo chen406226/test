@@ -70,6 +70,7 @@
       @rowDropOnEnd="rowDropOnEnd"
       :rowFixData="rowFixData"
       :rowDragOptions="{animation: 300}"
+      @columnDropOnEnd="columnDropOnEnd"
       :columnDragOptions="{animation: 300}"
       :levelFlag="{0:'年',1:'月',2:'周'}"
       default-expand-all
@@ -208,8 +209,9 @@ export default {
     },
     columnDropOnEnd({newIndex,oldIndex},{newProp,oldProp}) {
       // 内部已优化， 如有建议修改深复制的column数据，不要操作渲染依赖数据避免浪费
-      let currRow = this.tablehead2.splice(oldIndex, 1)[0]
-      this.tablehead2.splice(newIndex, 0, currRow)
+      // 如果用了勾选插槽则需要减一 或者用newProp,oldProp来寻找真正的位置
+      let currRow = this.tablehead2.splice(oldIndex-1, 1)[0]
+      this.tablehead2.splice(newIndex-1, 0, currRow)
       console.log(newIndex,oldIndex,newProp,oldProp,'vvvvvvvvvvvvvvvvvvvvvvvvvv')
     },
     deleteC (){
