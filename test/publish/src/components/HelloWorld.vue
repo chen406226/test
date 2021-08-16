@@ -55,9 +55,7 @@
       <li><a href="https://github.com/vuejs/awesome-vue" target="_blank" rel="noopener">awesome-vue</a></li>
     </ul> -->
     <Ctable
-      :data="virData"
-      :allData="tableData"
-      @setVirData="setVirData"
+      :data="tableData"
       ref="ctable"
       @dragChange="dragChange"
       :key="tableKey"
@@ -65,28 +63,15 @@
       :rowDrag="rowDrag"
       :columnDrag="columnDrag"
       :rowDropCopy="rowDropCopy"
-      :headerTipInfo="headerTipInfo"
       @row-contextmenu="rightClick"
       @fixRow-contextmenu="fixRightClick"
-      @selection-change="handleSelectionChange"
-      @rowDropOnEnd="rowDropOnEnd"
       :rowFixData="rowFixData"
-      :rowDragOptions="{animation: 300}"
-      @columnDropOnEnd="columnDropOnEnd"
-      :columnDragOptions="{animation: 300}"
-      :levelFlag="{0:'年',1:'月',2:'周'}"
       default-expand-all
       :tree-props="{children: 'children', hasChildren: 'hasChildren'}"
       border
       max-height="700"
       :column-data="tablehead2"
       style="width: 1200px">
-      <!-- <tableColumn type="selection" width="55" fixed>
-      </tableColumn> -->
-          <!-- <el-table-column
-      type="selection"
-      width="55">
-    </el-table-column> -->
       <tableColumn v-for="item in tablehead1c" :key="item.label" v-bind="item" >
         <template slot-scope="scope">
           <!-- <div @click="console(scope,item)">{{item.label}}</div> -->
@@ -132,16 +117,13 @@
 </template>
 
 <script>
-// import tableColumn from './tableColumn'
-import tableColumn from '../common/table/src/table-column.js'
+import tableColumn from './tableColumn'
 // import Tt from './tt'
 import Tt from '../common/select/src/ListItem'
 import Ctable from '../common/table/src/table'
 // import CSelect from '../common/select/src/select'
 import CSelect from '../common/select/src/Cmenu'
 import {deepD,da,da2} from './data'
-import menutest from '../common/menutest/index'
-import menuItem from '../common/menutest/item.vue'
 
 export default {
   name: 'HelloWorld',
@@ -149,7 +131,7 @@ export default {
     msg: String
   },
   components:{
-    tableColumn,Ctable,menutest,menuItem,Tt,CSelect
+    tableColumn,Ctable,Tt,CSelect
   },
   computed: {
     // tablehead1c() {
@@ -164,18 +146,17 @@ export default {
     checkList:{
       deep: true,
       handler(n,o) {
-        return
         if (n.includes('列拖拽')) {this.columnDrag = true}else{this.columnDrag = false}
         if (n.includes('行拖拽')) {this.rowDrag = true}else{this.rowDrag = false}
         if (n.includes('行拖拽复制询问')) {this.rowDropCopy = {type: 'inquiry'}}else{
-          if (n.includes('行拖拽复制')) {this.rowDropCopy = {type: 'auto', suffix:['Name'],suffixV:'-Copy'}}else{this.rowDropCopy = {disabled:true}}
+          if (n.includes('行拖拽复制')) {this.rowDropCopy = {type: 'auto'}}else{this.rowDropCopy = {disabled:true}}
         }
         if (n.includes('列固定')) {
           this.tablehead2[0]['fixed']=true
-          // this.dododo()
+          this.dododo()
         }else{
           this.tablehead2[0]['fixed']=false
-          // this.dododo()
+          this.dododo()
         }
         this.tableKey +=1
       },
@@ -185,22 +166,7 @@ export default {
   updated (){
     console.log('uuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuu')
   },
-  created() {
-    let l = []
-    for (let i = 0; i < 100000; i++) {
-      l.push({   date: '2013-05-02',
-        name: i,
-        id: i+1000,
-        province: '上海',
-        city: '普陀区',
-        address: '上海市普陀区金沙江路'+i,
-        zip: 200333})      
-      }
-    // this.tableData = this.tableData.concat(l)
-    this.tableData = l
-  },
   mounted(){
-
     this.dododo()
     // setInterval(() => {
     //   this.mmmm +=1
@@ -222,14 +188,13 @@ export default {
     overrideColumnDropOnEnd({newIndex},m) {
       console.log(newIndex,m,'vvvvvvvvvvvvvvvvvvvvvvvvvv')
     },
-    rowDropOnEnd($ev,d) {
-      console.log($ev,d,'###################')
+    rowDropOnEnd($ev) {
+      console.log($ev,'vvvvvvvvvvvvvvvvvvvvvvvvvv')
     },
     columnDropOnEnd({newIndex,oldIndex},{newProp,oldProp}) {
       // 内部已优化， 如有建议修改深复制的column数据，不要操作渲染依赖数据避免浪费
-      // 如果用了勾选插槽则需要减一 或者用newProp,oldProp来寻找真正的位置
-      let currRow = this.tablehead2.splice(oldIndex-1, 1)[0]
-      this.tablehead2.splice(newIndex-1, 0, currRow)
+      let currRow = this.tablehead2.splice(oldIndex, 1)[0]
+      this.tablehead2.splice(newIndex, 0, currRow)
       console.log(newIndex,oldIndex,newProp,oldProp,'vvvvvvvvvvvvvvvvvvvvvvvvvv')
     },
     deleteC (){
@@ -276,26 +241,9 @@ export default {
       console.log(this.tableData==self,this.tableData)
       // this.tableData.forEach((item)=>console.log(item.name))
     },
-          handleSelectionChange(val) {
-        this.multipleSelection = val;
-      },
     dragChange(n,o,d) {
       console.log(n,o,d,this.tableData==d)
       this.tableData = d
-    },
-    renderHeader: function renderHeader(h, _ref) {
-      var store = _ref.store;
-      return h("span", {
-        "attrs": {
-
-        },
-        "nativeOn": {
-          "click": ()=>{}
-        }
-      });
-    },
-    setVirData (data) {
-      this.virData = data
     }
   },
   data() {
@@ -310,14 +258,7 @@ export default {
       columnDrag:false,
       cashFixRow:null,
       rowDropCopy:{},
-      virData: deepD,
-      multipleSelection: [],
-      headerTipInfo: {
-        className: 's',
-        effect: 'dark',
-        content: '全选仅选择最外层',
-        placement: 'top'
-      },
+
       rowFixData:[
         // {
         //   date: '2016-05-04',
@@ -361,23 +302,16 @@ export default {
       }
       ],
       tablehead2:[
-          // {label:"日期",prop:'date',align:'center',width:250},
-          // {label:"姓名",prop:'name',align:'center',width:250},
-          // {label:"省份",prop:'province',align:'center',width:200},
-          // {label:"市区",prop:'city',align:'center',width:200},
-          // {label:"地址",prop:'address',width:300,align:'center',},
-          // {label:"邮编",prop:'zip',align:'center',width:150}
-                             {label: '日期', prop: 'date', align: 'center', width: 400},
-        {label: '姓名', prop: 'name', align: 'center', width: 100},
-        {label: '省份', prop: 'province', align: 'center', width: 100},
-        {label: '市区', prop: 'city', align: 'center', width: 200},
-        {label: '地址', prop: 'address', width: 300, align: 'center'},
-        {label: '邮编', prop:'zip', align: 'center', width: 150}
+          {label:"日期",prop:'date',align:'center',width:250},
+          {label:"姓名",prop:'name',align:'center',width:250},
+          {label:"省份",prop:'province',align:'center',width:200},
+          {label:"市区",prop:'city',align:'center',width:200},
+          {label:"地址",prop:'address',width:300,align:'center',},
+          {label:"邮编",prop:'zip',align:'center',width:150}
       ],
       tablehead1c:[],
       // tableData:da2,
-      tableData:[],
-      // tableData:deepD,
+      tableData:deepD,
       tableData1:da
     }
   },

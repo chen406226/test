@@ -1,6 +1,6 @@
 {
   "name": "celtable",
-  "version": "0.2.5",
+  "version": "0.3.8",
   "description": "tree-table element-ui table plus",
   "main": "./lib/ctable.umd.min.js",
   "keywords": [
@@ -11,7 +11,7 @@
     "drag-row",
     "drag-column"
   ],
-  "author": "Mr Zhang",
+  "author": "Mr C",
   "scripts": {
     "serve": "vue-cli-service serve",
     "start": "vue-cli-service serve",
@@ -23,6 +23,8 @@
     "babel-plugin-add-module-exports": "^1.0.4",
     "core-js": "^3.6.5",
     "element-ui": "^2.14.1",
+    "moment": "^2.29.1",
+    "sass-loader": "^11.0.1",
     "sortablejs": "^1.12.0",
     "vue": "^2.6.11"
   },
@@ -38,13 +40,9 @@
     "babel-helper-vue-jsx-merge-props": "^2.0.3",
     "babel-plugin-syntax-jsx": "^6.18.0",
     "babel-plugin-transform-vue-jsx": "^3.7.0",
+    "celtable": "^0.3.6",
     "eslint": "^6.7.2",
     "eslint-plugin-vue": "^6.2.2",
     "vue-template-compiler": "^2.6.11"
-  },
-  "browserslist": [
-    "> 1%",
-    "last 2 versions",
-    "not dead"
-  ]
+  }
 }
