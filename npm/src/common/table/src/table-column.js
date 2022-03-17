@@ -316,6 +316,7 @@ export default {
   },
 
   render(h) {
+    console.log(this, h, 'tablecolumsn',this.label)
     // slots 也要渲染，需要计算合并表头
     return h('div', this.$slots.default);
   }

@@ -37,7 +37,7 @@ const install = function (Vue, opts = {}) {
 if (typeof window !== 'undefined' && window.Vue) {
   install(window.Vue);
 }
-
+console.log('mani.js')
 
 export default {
   version: '0.3.4',
